@@ -29,7 +29,7 @@
 - [ ] JavaScript: enough to read web page code
 - [ ] Bash scripting basics
 
-**Resource:** freeCodeCamp Python + JS (I won't over-invest here — I'll return later)
+**Resource:** freeCodeCamp Python + JS (don't over-invest here)
 
 ### Bandit  
 - [ ] Levels 0–2 (readme, dash file, spaces file)
@@ -39,7 +39,7 @@
 - [ ] Levels 6–10 (find with permissions, grep, base64, tr/rot13, gzip)
 - [ ] Levels 11–15 (cron, git, passwords)
 - [ ] Levels 16–20 (nc, openssl, port knocking)
-- [ ] Levels 21–34 (finish the game — optional but powerful)
+- [ ] Levels 21–34 (finish the game optional but powerful)
 
 ---
 
