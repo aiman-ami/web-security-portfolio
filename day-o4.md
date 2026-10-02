@@ -1,7 +1,7 @@
 # Day 4: Managing Files Like a Boss
 
 - Linux Journey command line lessons:
-  - Lesson 9: history — recall & reuse past commands
+  - Lesson 9: history (recall & reuse past commands)
   - Lesson 10: cp (copy files/directories)
   - Lesson 11: mv (move + rename)
   - Lesson 12: mkdir (make directories)
@@ -29,7 +29,7 @@
   - e.g. `cp *.jpg /home/pete/pictures`
 - Copying a directory needs recursion: `cp -r pim/ /home/pete/`
 - `-a` = backup style, preserves links + attributes: `cp -a project/ project-backup/`
-- Existing destination gets replaced by default — control it with:
+- Existing destination gets replaced by default control it with:
   - `-i` ask before overwrite | `-n` never overwrite | `-u` copy only if source is newer/missing
   - `-p` preserve permissions/ownership | `-f` force (removes destination first) | `-v` verbose
 
