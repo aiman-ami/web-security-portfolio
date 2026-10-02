@@ -4,7 +4,7 @@
 
 ## PHASE 1: Foundations (Months 1–2)
 
-### Linux — my home base
+### Linux 
 - [x] Install Ubuntu (WSL) on Windows
 - [ ] Learn basic navigation: `pwd`, `cd`, `ls`, `mkdir`, `touch`
 - [ ] Learn to read files: `cat`, `less`, `head`, `tail`
@@ -24,14 +24,14 @@
 
 **Resources:** NetworkChuck networking videos / Linux Journey "Networking Nomad" section
 
-### Programming (basics only — enough to read code)
+### Programming (basics only enough to read code)
 - [ ] Python: variables, loops, functions, `requests` library
 - [ ] JavaScript: enough to read web page code
 - [ ] Bash scripting basics
 
 **Resource:** freeCodeCamp Python + JS (I won't over-invest here — I'll return later)
 
-### Bandit — my "boss fights" 
+### Bandit  
 - [ ] Levels 0–2 (readme, dash file, spaces file)
 - [ ] Level 3 (hidden file → `ls -a`)
 - [ ] Level 4 (`file` command to find the data file)
@@ -73,7 +73,7 @@ For each one: **read → lab → writeup**
 - [ ] Logging/Monitoring Failures
 - [ ] SSRF
 
-**Resources:** PortSwigger Web Security Academy (free — the core of everything) + Rana Khalil's YouTube series
+**Resources:** PortSwigger Web Security Academy (free the core of everything) + Rana Khalil's YouTube series
 
 ### Supporting practice
 - [ ] TryHackMe free rooms: Web Fundamentals path
@@ -97,11 +97,11 @@ For each one: **read → lab → writeup**
 
 - [ ] Set up my HackerOne account + profile
 - [ ] Read program policies & scope carefully (legal safety!)
-- [ ] Start with VDPs (non-paying programs) — lower competition
+- [ ] Start with VDPs (non-paying programs) lower competition
 - [ ] Learn report writing: title, severity, steps, impact, PoC
-- [ ] Land my first valid report (even informational/low) 🎯
-- [ ] Get my first duplicate (everyone gets them — it's a milestone)
-- [ ] Earn my first bounty payout 💰
+- [ ] Land my first valid report (even informational/low) 
+- [ ] Get my first duplicate 
+- [ ] Earn my first bounty payout 
 - [ ] Build an Upwork profile with sample reports → land my first freelance audit client
 
 ---
