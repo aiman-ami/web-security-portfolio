@@ -20,7 +20,7 @@
 - [ ] Understand what an IP address, ports, and DNS are
 - [ ] Understand TCP vs UDP (basic level)
 - [ ] Master HTTP/HTTPS: requests, responses, methods (GET/POST), status codes, headers, cookies
-- [ ] Deepen my SSH understanding (I've already used it! ✅)
+- [ ] Deepen my SSH understanding 
 
 **Resources:** NetworkChuck networking videos / Linux Journey "Networking Nomad" section
 
