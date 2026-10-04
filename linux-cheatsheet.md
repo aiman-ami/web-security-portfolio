@@ -49,6 +49,18 @@ No recycle bin. rm deletes forever. Think twice, especially with rm -rf
 - /word = search for word
 - q = quit
 
+## Text Editing
+| Command | What it does | Example |
+|---|---|---|
+| nano | Simple text editor inside the terminal | nano notes.txt |
+
+### nano controls (shown at the bottom of the screen, ^ = Ctrl)
+- Ctrl+O = save (Write Out), then Enter to confirm
+- Ctrl+X = exit (asks to save if changes exist)
+- Ctrl+W = search inside the file
+- Ctrl+K = cut the current line
+- Ctrl+U = paste
+
 ## Finding Things
 | Command | What it does | Example |
 |---|---|---|
@@ -87,91 +99,6 @@ Three groups of three, r = read, w = write, x = execute
 - 755 = owner rwx, everyone else r-x
 - 644 = owner rw-, everyone else r--
 - Example: chmod 644 file.txt
-
-## Text Power (Text Fu)
-| Command | What it does | Example |
-|---|---|---|
-| &gt; | Redirect output to a file (overwrites) | echo hi &gt; file.txt |
-| &gt;&gt; | Redirect output, APPENDS to file | echo more &gt;&gt; file.txt |
-| \| | Pipe, send output of one command into another | cat log \| grep error |
-| sort | Sort lines alphabetically | sort names.txt |
-| uniq | Remove duplicate lines (use after sort) | sort names.txt \| uniq |
-| wc | Count lines, words, characters | wc -l file.txt |
-| cut | Cut out columns of text | cut -d: -f1 /etc/passwd |
-| tr | Replace or delete characters | tr a-z A-Z |
-| echo | Print text | echo hello |
-
-### wc flags
-- l = lines only, w = words only, c = bytes only
-
-## System and Help
-| Command | What it does | Example |
-|---|---|---|
-| man | The manual, full documentation of any command | man find |
-| whatis | One line summary of a command | whatis grep |
-| help | Help for shell builtin commands | help cd |
-| type | Tells if a command is builtin or a program | type cd |
-| history | Shows my previous commands | history |
-| alias | Create a shortcut for a command | alias ll='ls -la' |
-| clear | Clear the screen (history NOT erased) | clear |
-| exit | Close the shell | exit |
-
-### history tricks
-- Up arrow = previous commands
-- !! = run the last command again
-- !102 = run command number 102 from history
-- !cat = run the most recent command starting with cat
-- history -c = clear history, history -w = save to file
-
-## Processes
-| Command | What it does | Example |
-|---|---|---|
-| ps | Show running processes | ps aux |
-| top | Live view of processes and CPU or RAM | top |
-| kill | Kill a process by ID | kill 1234 |
-| Ctrl+C | Stop the running command |  |
-
-## Network and Download
-| Command | What it does | Example |
-|---|---|---|
-| wget | Download a file from the internet | wget https://site.com/file.zip |
-| curl | Transfer data, download or send requests | curl https://api.site.com |
-| ssh | Connect to a remote machine securely | ssh user@host -p 2220 |
-
-## Links
-| Command | What it does | Example |
-|---|---|---|
-| ln -s | Create a symbolic link (shortcut) | ln -s target linkname |
-
-Order: target first, link name second. Verify with ls -l, shows target -&gt; linkname
-
-## Wildcards
-| Symbol | Matches |
-|---|---|
-| * | Any sequence of characters |
-| ? | Any single character |
-| [abc] | Any one character inside brackets |
-| Example: cp *.jpg pics/ copies all jpg files |
-
-## Golden Rules
-1. Filenames starting with - need ./ in front, example: cat ./-file07
-2. Filenames with spaces need quotes, example: cat "my file.txt"
-3. No output usually means wrong directory. Run pwd first
-4. When stuck: man commandname. The manual always knows
-5. Never put passwords or API keys directly in commands, they get saved in history
-6. rm has no undo. There is no recycle bin
-
-## Text Editing
-| Command | What it does | Example |
-|---|---|---|
-| nano | Simple text editor inside the terminal | nano notes.txt |
-
-### nano controls (shown at the bottom of the screen, ^ = Ctrl)
-- Ctrl+O = save (Write Out), then Enter to confirm
-- Ctrl+X = exit (asks to save if changes exist)
-- Ctrl+W = search inside the file
-- Ctrl+K = cut the current line
-- Ctrl+U = paste
 
 ## Text Power (Text Fu)
 | Command | What it does | Example |
@@ -238,3 +165,60 @@ Order: target first, link name second. Verify with ls -l, shows target -&gt; lin
 - z = also handle gzip compression (.tar.gz files)
 - v = verbose, show files as they extract
 - Examples: tar -xf archive.tar | tar -xzf archive.tar.gz | tar -czf backup.tar.gz folder/
+
+## System and Help
+| Command | What it does | Example |
+|---|---|---|
+| man | The manual, full documentation of any command | man find |
+| whatis | One line summary of a command | whatis grep |
+| help | Help for shell builtin commands | help cd |
+| type | Tells if a command is builtin or a program | type cd |
+| history | Shows my previous commands | history |
+| alias | Create a shortcut for a command | alias ll='ls -la' |
+| clear | Clear the screen (history NOT erased) | clear |
+| exit | Close the shell | exit |
+
+### history tricks
+- Up arrow = previous commands
+- !! = run the last command again
+- !102 = run command number 102 from history
+- !cat = run the most recent command starting with cat
+- history -c = clear history, history -w = save to file
+
+## Processes
+| Command | What it does | Example |
+|---|---|---|
+| ps | Show running processes | ps aux |
+| top | Live view of processes and CPU or RAM | top |
+| kill | Kill a process by ID | kill 1234 |
+| Ctrl+C | Stop the running command |  |
+
+## Network and Download
+| Command | What it does | Example |
+|---|---|---|
+| wget | Download a file from the internet | wget https://site.com/file.zip |
+| curl | Transfer data, download or send requests | curl https://api.site.com |
+| ssh | Connect to a remote machine securely | ssh user@host -p 2220 |
+
+## Links
+| Command | What it does | Example |
+|---|---|---|
+| ln -s | Create a symbolic link (shortcut) | ln -s target linkname |
+
+Order: target first, link name second. Verify with ls -l, shows target -&gt; linkname
+
+## Wildcards
+| Symbol | Matches |
+|---|---|
+| * | Any sequence of characters |
+| ? | Any single character |
+| [abc] | Any one character inside brackets |
+| Example: cp *.jpg pics/ copies all jpg files |
+
+## Golden Rules
+1. Filenames starting with - need ./ in front, example: cat ./-file07
+2. Filenames with spaces need quotes, example: cat "my file.txt"
+3. No output usually means wrong directory. Run pwd first
+4. When stuck: man commandname. The manual always knows
+5. Never put passwords or API keys directly in commands, they get saved in history
+6. rm has no undo. There is no recycle bin
