@@ -15,6 +15,12 @@
 - [ ] Learn text editing: `nano` (and later `vim` basics)
 - [ ] Learn downloading: `wget`, `curl`
 - [ ] Learn process control: `ps`, `top`, `kill`, `Ctrl+C`
+Linux extras (before Phase 2)
+- [ ] Text Fu section of Linux Journey: pipes, redirection, sort, uniq, wc, cut, tr
+- [ ] sudo, whoami, id, su (becoming and checking other users)
+- [ ] apt: installing tools
+- [ ] Environment variables: $PATH, env, export
+- [ ] Archives: tar, gzip
 
 ### Networking basics
 - [ ] Understand what an IP address, ports, and DNS are
@@ -123,6 +129,4 @@ For each one: **read → lab → writeup**
 
 1. This file lives in my GitHub repo as `roadmap.md`
 2. **Rule:** never skip ticking the tick IS my motivation system
-3. **Pace:** ~2–4 ticks per day = on schedule for first bounties around month 8–10
-
 ---
