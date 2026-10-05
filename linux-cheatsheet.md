@@ -1,4 +1,5 @@
 # Linux Basics Cheat Sheet (Aiman's Edition)
+Updated after Linux Journey command line section, Text Fu, and cmdchallenge battles
 
 ## Navigation
 | Command | What it does | Example |
@@ -21,6 +22,7 @@
 | mv | Move OR rename a file | mv a.txt b.txt, mv file.txt docs/ |
 | rm | Delete a file permanently | rm file.txt, rm -r folder/ |
 | file | Tells what type a file really is | file mysteryfile |
+| ln -s | Create a symbolic link (shortcut) to a file | ln -s target linkname |
 
 ### cp / mv / rm flags
 - r = recursive, needed for directories
@@ -34,6 +36,10 @@
 
 ### rm warning
 No recycle bin. rm deletes forever. Think twice, especially with rm -rf
+
+### symbolic links
+- Order is: target first, link name second
+- Verify with ls -l, shows linkname -&gt; target
 
 ## Reading Files
 | Command | What it does | Example |
@@ -54,32 +60,61 @@ No recycle bin. rm deletes forever. Think twice, especially with rm -rf
 |---|---|---|
 | nano | Simple text editor inside the terminal | nano notes.txt |
 
-### nano controls (shown at the bottom of the screen, ^ = Ctrl)
-- Ctrl+O = save (Write Out), then Enter to confirm
-- Ctrl+X = exit (asks to save if changes exist)
+### nano controls (^ = Ctrl)
+- Ctrl+O = save, then Enter to confirm
+- Ctrl+X = exit
 - Ctrl+W = search inside the file
 - Ctrl+K = cut the current line
 - Ctrl+U = paste
 
-## Finding Things
+## Finding Files
 | Command | What it does | Example |
 |---|---|---|
-| find | Search for files by name, size, type | find . -name "*.txt" |
-| grep | Search for TEXT inside files | grep "password" log.txt |
+| find | Search for files by name, size, type, anywhere below me | find . -name "*.txt" |
 | which | Shows where a command lives | which python3 |
 
 ### find flags
-- name = search by name (use quotes and wildcards)
+- name = search by name (use quotes around patterns with wildcards)
 - type f = files only, type d = directories only
-- size = filter by size, c for bytes, k for KB, + means bigger, - means smaller
-- Examples: find . -type f -size 1033c | find . -name "*.log"
+- size = filter by size, c for bytes, k for KB, + bigger, - smaller
+- maxdepth 1 = only current directory, do not go deeper
+- mindepth 1 = do not include the starting directory itself
+- delete = delete everything found (use with care)
+- exec = run a command on each result, {} is the placeholder
 
-### grep flags
-- i = ignore uppercase or lowercase
-- r = search recursively through folders
-- n = show line numbers
-- v = invert, show lines that do NOT match
-- Example: grep -rni "error" /var/log
+### find examples
+- find . -type f -size 1033c = files of exactly 1033 bytes here and below
+- find . -name "*.log" = all .log files recursively
+- find . -type f -name "*.doc" -delete = delete all .doc files recursively
+- find . -mindepth 1 -delete = delete EVERYTHING here including dotfiles
+- find . -maxdepth 1 -type f = only files in this directory, no subdirectories
+
+## Searching Inside Files (grep)
+| Command | What it does | Example |
+|---|---|---|
+| grep | Show lines in a file that match a string | grep "error" log.txt |
+| grep -r | Search recursively through all files in folders | grep -r "password" . |
+| grep -i | Ignore uppercase or lowercase | grep -i "error" log.txt |
+| grep -n | Show line numbers | grep -n "500" access.log |
+| grep -v | Invert, show lines that do NOT match | grep -v "404" access.log |
+| grep -l | List only FILENAMES that contain a match (lowercase L) | grep -l "500" * |
+| grep -h | Hide the filename prefix, show only the matching lines | grep -h "500" * |
+| grep -o | Print ONLY the matching part, not the whole line | grep -o "GET" access.log |
+| grep -E | Extended regex mode, enables advanced patterns | grep -E '[0-9]{1,3}' file |
+
+### grep file filtering flags (need -r to work)
+- include = only search files matching a pattern
+- exclude = skip files matching a pattern
+- Example: grep -rh "500" -r --include="access.log*" = search for 500 only inside files starting with access.log, recursively, hide filenames
+
+### basic regex for grep -E
+- [0-9] = any digit, [a-z] = any lowercase letter, [A-Z] = any uppercase
+- {1,3} = repeat previous thing 1 to 3 times
+- . = any single character
+- ^ = start of a line (careful: IPs appear mid-line, so ^ would skip them)
+- $ = end of a line
+- Example IP pattern: [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}
+- Note: a real dot must be escaped with backslash, otherwise it means any character
 
 ## Permissions
 | Command | What it does | Example |
@@ -92,7 +127,7 @@ No recycle bin. rm deletes forever. Think twice, especially with rm -rf
 
 Three groups of three, r = read, w = write, x = execute
 - First group = owner, second = group, third = everyone else
-- On directories, x = enter the directory
+- On directories, x = enter the directory (sometimes called search or traverse permission)
 
 ### chmod number method
 - r = 4, w = 2, x = 1, add them up
@@ -108,6 +143,7 @@ Three groups of three, r = read, w = write, x = execute
 | \| | Pipe, send output of one command into another | cat log \| grep error |
 | sort | Sort lines alphabetically | sort names.txt |
 | uniq | Remove duplicate lines (use after sort) | sort names.txt \| uniq |
+| uniq -c | Count how many times each line appears | sort names.txt \| uniq -c |
 | wc | Count lines, words, characters | wc -l file.txt |
 | cut | Cut out columns of text | cut -d: -f1 /etc/passwd |
 | tr | Replace or delete characters | tr a-z A-Z |
@@ -116,18 +152,22 @@ Three groups of three, r = read, w = write, x = execute
 ### wc flags
 - l = lines only, w = words only, c = bytes only
 
+### counting with pipes
+- find . -maxdepth 1 -type f \| wc -l = count files in current directory (including dotfiles)
+- grep "GET" access.log \| wc -l = count matching lines
+- sort \| uniq -c \| sort -rn = most common lines first
+
 ## Users and sudo
 | Command | What it does | Example |
 |---|---|---|
 | whoami | Shows which user I am | whoami |
-| id | Shows my user ID, group, and all groups I belong to | id |
+| id | Shows my user ID and all groups I belong to | id |
 | sudo | Run a command as root (superuser) | sudo apt update |
 | su | Switch to another user | su - root |
 
 ### sudo notes
-- sudo -l = list what commands I am allowed to run as root (first check in privilege escalation)
+- sudo -l = list what I am allowed to run as root (first check in privilege escalation)
 - sudo asks for MY password, not the root password
-- Running commands as root = full power, use carefully
 
 ## Package Management (installing tools)
 | Command | What it does | Example |
@@ -148,9 +188,9 @@ Three groups of three, r = read, w = write, x = execute
 | $VARIABLE | Use a variable, $ before the name | echo $PATH |
 
 ### notes
-- $PATH = the list of folders where the shell looks for commands. Command not found usually means the tool is not in PATH
-- Pentest relevance: PATH manipulation is a classic privilege escalation trick
+- $PATH = folders where the shell looks for commands. Command not found usually means the tool is not in PATH
 - Common ones: $HOME (my home folder), $USER, $SHELL
+- Never put passwords or API keys in commands, they get saved in history
 
 ## Archives (zip files of Linux)
 | Command | What it does | Example |
@@ -164,6 +204,7 @@ Three groups of three, r = read, w = write, x = execute
 - f = file (always needed, comes last, then the filename)
 - z = also handle gzip compression (.tar.gz files)
 - v = verbose, show files as they extract
+- Memory trick: eXtract Ze File = xzf
 - Examples: tar -xf archive.tar | tar -xzf archive.tar.gz | tar -czf backup.tar.gz folder/
 
 ## System and Help
@@ -179,11 +220,12 @@ Three groups of three, r = read, w = write, x = execute
 | exit | Close the shell | exit |
 
 ### history tricks
-- Up arrow = previous commands
+- Up arrow = scroll through previous commands
 - !! = run the last command again
 - !102 = run command number 102 from history
 - !cat = run the most recent command starting with cat
-- history -c = clear history, history -w = save to file
+- history -c = clear in-memory history, history -w = save to ~/.bash_history
+- Command lines get stored in history, never type passwords or tokens directly
 
 ## Processes
 | Command | What it does | Example |
@@ -200,20 +242,56 @@ Three groups of three, r = read, w = write, x = execute
 | curl | Transfer data, download or send requests | curl https://api.site.com |
 | ssh | Connect to a remote machine securely | ssh user@host -p 2220 |
 
-## Links
-| Command | What it does | Example |
-|---|---|---|
-| ln -s | Create a symbolic link (shortcut) | ln -s target linkname |
-
-Order: target first, link name second. Verify with ls -l, shows target -&gt; linkname
-
 ## Wildcards
 | Symbol | Matches |
 |---|---|
-| * | Any sequence of characters |
+| * | Any sequence of characters (does NOT match dotfiles) |
 | ? | Any single character |
 | [abc] | Any one character inside brackets |
+| .[!.]* | Dotfiles only, but NOT . and .. themselves |
 | Example: cp *.jpg pics/ copies all jpg files |
+
+### THE hidden files trap
+- ls without -a does not show dotfiles
+- The * wildcard does NOT match dotfiles either
+- So rm -rf * always leaves hidden files behind
+- Attackers hide files as dotfiles for exactly this reason
+- Solutions: ls -a to see them, find . -mindepth 1 -delete to nuke everything
+
+## Situations: What do I use?
+| Situation | Command |
+|---|---|
+| I do not know where I am | pwd |
+| A command gives no output or weird output | pwd first, I am probably in the wrong directory |
+| I need to find a file by name, anywhere below here | find . -name "filename" |
+| I need to find files of a certain size | find . -type f -size 1033c |
+| The task says recursively | find or grep -r |
+| Delete all files of one type everywhere below | find . -name "*.doc" -delete |
+| Delete everything in a folder including hidden files | find . -mindepth 1 -delete |
+| Count files in current directory only | find . -maxdepth 1 -type f \| wc -l |
+| Search for a word inside files | grep "word" file.txt |
+| Search for a word in ALL files including subfolders | grep -r "word" . |
+| Which files contain this word (names only) | grep -rl "word" . |
+| Show matching lines without file paths | grep -rh "word" files |
+| Pull out only IPs, emails, tokens from text | grep -hoE 'pattern' file |
+| Search only certain files by name | grep -r "word" --include="*.log" . |
+| Case does not matter | grep -i |
+| Count how many lines match | grep "word" file \| wc -l |
+| Most common lines in a file | sort file \| uniq -c \| sort -rn |
+| Filename starts with a dash | cat ./-file07 (./ in front) |
+| Filename has spaces | cat "my file.txt" (quotes) |
+| File is hidden | ls -a to see it |
+| Read a huge file slowly | less file |
+| See last lines of a log | tail -n 20 file |
+| Redo the last command | !! |
+| Command not found | tool missing or not in PATH, try which toolname |
+| I forgot how a command works | man commandname |
+| Need to install a tool | sudo apt install toolname |
+| Need root power for one command | sudo command |
+| Download a file | wget URL |
+| Zip up a folder | tar -czf backup.tar.gz folder/ |
+| Unzip a tarball | tar -xzf file.tar.gz |
+| Need a shortcut for a long command | alias name='long command' |
 
 ## Golden Rules
 1. Filenames starting with - need ./ in front, example: cat ./-file07
@@ -222,3 +300,7 @@ Order: target first, link name second. Verify with ls -l, shows target -&gt; lin
 4. When stuck: man commandname. The manual always knows
 5. Never put passwords or API keys directly in commands, they get saved in history
 6. rm has no undo. There is no recycle bin
+7. The * wildcard never matches dotfiles. Hidden files need special handling
+8. --include and --exclude only work together with -r
+9. Recursive means find or grep -r
+10. Every problem is: find it, read it, filter it, count it. Pipes connect the steps
