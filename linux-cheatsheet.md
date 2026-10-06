@@ -1,5 +1,5 @@
 # Linux Basics Cheat Sheet (Aiman's Edition)
-Updated after Linux Journey command line section, Text Fu, and cmdchallenge battles
+Covers: Linux Journey command line section, Text Fu section, cmdchallenge battles, and all labs
 
 ## Navigation
 | Command | What it does | Example |
@@ -46,8 +46,20 @@ No recycle bin. rm deletes forever. Think twice, especially with rm -rf
 |---|---|---|
 | cat | Print whole file to screen | cat readme |
 | less | Scroll through a file page by page | less bigfile.log |
-| head | Show the FIRST lines of a file | head -n 5 file.txt |
-| tail | Show the LAST lines of a file | tail -n 5 file.txt |
+| head | Show the FIRST 10 lines of a file by default | head -n 5 file.txt |
+| tail | Show the LAST 10 lines of a file by default | tail -n 5 file.txt |
+
+### head flags
+- n = number of lines
+- c = number of bytes instead of lines
+- q = quiet, suppress filename headers when using multiple files
+- v = verbose, show the header even for one file
+
+### tail flags
+- n = number of lines
+- n +N = start at line N and print to the end (tail -n +5 file)
+- f = follow, watch new lines appear live in a log (Ctrl+C to stop)
+- F = follow by name, survives log rotation, reopens the file if replaced
 
 ### less controls
 - space = next page
@@ -87,7 +99,7 @@ No recycle bin. rm deletes forever. Think twice, especially with rm -rf
 - find . -name "*.log" = all .log files recursively
 - find . -type f -name "*.doc" -delete = delete all .doc files recursively
 - find . -mindepth 1 -delete = delete EVERYTHING here including dotfiles
-- find . -maxdepth 1 -type f = only files in this directory, no subdirectories
+- find . -maxdepth 1 -type f = only files in this directory
 
 ## Searching Inside Files (grep)
 | Command | What it does | Example |
@@ -105,7 +117,7 @@ No recycle bin. rm deletes forever. Think twice, especially with rm -rf
 ### grep file filtering flags (need -r to work)
 - include = only search files matching a pattern
 - exclude = skip files matching a pattern
-- Example: grep -rh "500" -r --include="access.log*" = search for 500 only inside files starting with access.log, recursively, hide filenames
+- Example: grep -rh "500" -r --include="access.log*" = search for 500 only inside files starting with access.log, recursively
 
 ### basic regex for grep -E
 - [0-9] = any digit, [a-z] = any lowercase letter, [A-Z] = any uppercase
@@ -135,25 +147,68 @@ Three groups of three, r = read, w = write, x = execute
 - 644 = owner rw-, everyone else r--
 - Example: chmod 644 file.txt
 
-## Text Power (Text Fu)
+## Streams (stdin, stdout, stderr)
+Every command has three streams:
+- stdin (0) = input the command reads, default is the keyboard
+- stdout (1) = normal output, default is the screen
+- stderr (2) = error messages, default is the screen
+
+## Output Redirection
+| Operator | What it does | Example |
+|---|---|---|
+| &gt; | Send stdout to a file, OVERWRITES if file exists | ls -l &gt; file_list.txt |
+| &gt;&gt; | Send stdout to a file, APPENDS to the end | echo log &gt;&gt; activity.log |
+| 2&gt; | Send stderr (errors only) to a file | find / -name x 2&gt; errors.txt |
+| 2&gt;&gt; | Append stderr to a file | command 2&gt;&gt; errors.log |
+| &&gt; | Send BOTH stdout and stderr to a file | command &&gt; all_output.txt |
+| &&gt;&gt; | Append both stdout and stderr | command &&gt;&gt; full.log |
+| &gt; file 2&gt;&1 | Old style for both streams (seen in older scripts) | command &gt; file 2&gt;&1 |
+| 2&gt;/dev/null | Throw errors away, show only clean output | find / -name x 2&gt;/dev/null |
+
+## Input Redirection
+| Operator | What it does | Example |
+|---|---|---|
+| &lt; | Feed a file as stdin to a command | sort &lt; items.txt |
+| wc &lt; file | vs wc file: with &lt; the command gets a stream, no filename to print | wc -l &lt; items.txt |
+| cat &lt; in &gt; out | Chain input and output redirection | cat &lt; a.txt &gt; b.txt |
+
+## Pipes and tee
 | Command | What it does | Example |
 |---|---|---|
-| &gt; | Redirect output to a file (overwrites) | echo hi &gt; file.txt |
-| &gt;&gt; | Redirect output, APPENDS to file | echo more &gt;&gt; file.txt |
-| \| | Pipe, send output of one command into another | cat log \| grep error |
+| \| | Pipe, connect stdout of left command to stdin of right command | cat log \| grep error |
+| tee | Save output to a file AND show it on screen at the same time | ls -l \| tee file_list.txt |
+| tee -a | Append instead of overwrite | date \| tee -a activity.log |
+| tee in pipeline | Save the intermediate result and keep processing | ls /etc \| tee listing.txt \| grep conf |
+
+## Text Processing
+| Command | What it does | Example |
+|---|---|---|
 | sort | Sort lines alphabetically | sort names.txt |
-| uniq | Remove duplicate lines (use after sort) | sort names.txt \| uniq |
+| uniq | Remove duplicate lines, use after sort | sort names.txt \| uniq |
 | uniq -c | Count how many times each line appears | sort names.txt \| uniq -c |
 | wc | Count lines, words, characters | wc -l file.txt |
-| cut | Cut out columns of text | cut -d: -f1 /etc/passwd |
+| cut -c | Select characters by position, starts at 1 | cut -c 1 file |
+| cut -f | Select fields, default delimiter is tab | cut -f 2 file |
+| cut -d | Set a custom delimiter for field mode | cut -d ':' -f 1 /etc/passwd |
+| cut -s | Suppress lines that do not contain the delimiter | cut -s -d ';' -f 2 file |
+| paste | Join lines from files as columns, default separator is tab | paste names.txt roles.txt |
+| paste -d | Set a custom separator | paste -d ':' a.txt b.txt |
+| paste -s | Serial mode, join all lines of a file into one line | paste -s words.txt |
 | tr | Replace or delete characters | tr a-z A-Z |
+| date | Show current date and time, great for logs | date &gt;&gt; activity.log |
 | echo | Print text | echo hello |
+
+### cut and paste notes
+- cut and paste read from stdin when no file is given, so both fit naturally in pipes
+- a - operand means read that input position from stdin
+- when paste input files have different lengths, missing values become empty fields
+- cut picks columns, grep picks lines
 
 ### wc flags
 - l = lines only, w = words only, c = bytes only
 
 ### counting with pipes
-- find . -maxdepth 1 -type f \| wc -l = count files in current directory (including dotfiles)
+- find . -maxdepth 1 -type f \| wc -l = count files in current directory
 - grep "GET" access.log \| wc -l = count matching lines
 - sort \| uniq -c \| sort -rn = most common lines first
 
@@ -183,14 +238,35 @@ Three groups of three, r = read, w = write, x = execute
 ## Environment Variables
 | Command | What it does | Example |
 |---|---|---|
-| env | Show all environment variables | env |
-| export | Set or create an environment variable | export PATH=$PATH:/opt/tools |
-| $VARIABLE | Use a variable, $ before the name | echo $PATH |
+| env | Show all environment variables as NAME=value | env |
+| export | Mark a variable to be inherited by child processes | export TEST=test |
+| $VARIABLE | Use a variable, quote it to keep it as one argument | echo "$HOME" |
+| echo $$ | Show the PID of my current shell | echo $$ |
+| ps -f | Detailed process info including PPID (parent PID) | ps -f |
+| source file | Run a file's commands in the current shell, reloads config | source ~/.bashrc |
+| set -o name | Turn a shell option on | set -o noclobber |
+| set +o name | Turn a shell option off | set +o noclobber |
+| env -i COMMAND | Run a command with an empty environment | env -i bash |
 
-### notes
-- $PATH = folders where the shell looks for commands. Command not found usually means the tool is not in PATH
-- Common ones: $HOME (my home folder), $USER, $SHELL
-- Never put passwords or API keys in commands, they get saved in history
+### environment variable concepts
+- Every process has an environment: name=value strings inherited from its parent process
+- Bash expands $NAME or ${NAME} before running a command
+- Local variables stay in the current shell. Exported variables get copied to every child process. A child can never change its parent's variables
+- Inline assignment only affects one command: LANG=C sort names.txt
+- set -o allexport = automatically export every variable defined after it
+- .bashrc and .zshrc = startup files, anything in them runs every time a shell opens, this is where aliases, variables and options become permanent
+- noclobber = prevents accidental overwrite of existing files with &gt; (add set -o noclobber to your rc file to make it permanent)
+
+### PATH rules
+- PATH is a colon-separated list of directories the shell searches for commands
+- echo $PATH to see it, printf '%s\n' "$PATH" also works
+- Add a folder safely, keeping the old path: export PATH="/opt/coolapp/bin:$PATH"
+- Do NOT replace PATH with only the new directory, normal commands stop resolving
+- Do NOT add untrusted writable directories, an attacker could drop a malicious executable there that runs instead of the real command
+
+### security notes
+- Environment variables can contain credentials, tokens, internal paths. Never paste full env output into public issues or logs without redacting
+- Never put passwords or API keys in commands directly, they get saved in history
 
 ## Archives (zip files of Linux)
 | Command | What it does | Example |
@@ -225,12 +301,13 @@ Three groups of three, r = read, w = write, x = execute
 - !102 = run command number 102 from history
 - !cat = run the most recent command starting with cat
 - history -c = clear in-memory history, history -w = save to ~/.bash_history
-- Command lines get stored in history, never type passwords or tokens directly
+- Command lines get stored in history, never type secrets directly
 
 ## Processes
 | Command | What it does | Example |
 |---|---|---|
 | ps | Show running processes | ps aux |
+| ps -f | Full format, includes PPID | ps -f |
 | top | Live view of processes and CPU or RAM | top |
 | kill | Kill a process by ID | kill 1234 |
 | Ctrl+C | Stop the running command |  |
@@ -256,7 +333,7 @@ Three groups of three, r = read, w = write, x = execute
 - The * wildcard does NOT match dotfiles either
 - So rm -rf * always leaves hidden files behind
 - Attackers hide files as dotfiles for exactly this reason
-- Solutions: ls -a to see them, find . -mindepth 1 -delete to nuke everything
+- Solutions: ls -a to see them, find . -mindepth 1 -delete to remove everything
 
 ## Situations: What do I use?
 | Situation | Command |
@@ -283,8 +360,18 @@ Three groups of three, r = read, w = write, x = execute
 | File is hidden | ls -a to see it |
 | Read a huge file slowly | less file |
 | See last lines of a log | tail -n 20 file |
+| Watch a log file live as it grows | tail -f application.log |
+| Watch a log that gets rotated | tail -F application.log |
+| Skip the first 4 lines and print the rest | tail -n +5 file |
 | Redo the last command | !! |
+| Errors are flooding my output | add 2&gt;/dev/null to the command |
+| Save output to a file AND see it live | command \| tee file.txt |
+| Add a timestamp to a log | date &gt;&gt; logfile |
+| Extract one column from a file | cut -d ':' -f 1 file |
+| Combine two files side by side as columns | paste -d ':' a.txt b.txt |
+| Turn a list into one single line | paste -s words.txt |
 | Command not found | tool missing or not in PATH, try which toolname |
+| Add a folder to PATH safely | export PATH="/new/dir:$PATH" |
 | I forgot how a command works | man commandname |
 | Need to install a tool | sudo apt install toolname |
 | Need root power for one command | sudo command |
@@ -292,6 +379,9 @@ Three groups of three, r = read, w = write, x = execute
 | Zip up a folder | tar -czf backup.tar.gz folder/ |
 | Unzip a tarball | tar -xzf file.tar.gz |
 | Need a shortcut for a long command | alias name='long command' |
+| Make an alias or variable permanent | add it to ~/.bashrc, then source ~/.bashrc |
+| Stop myself overwriting files by accident | set -o noclobber |
+| Reload shell config without closing terminal | source ~/.bashrc |
 
 ## Golden Rules
 1. Filenames starting with - need ./ in front, example: cat ./-file07
@@ -300,7 +390,9 @@ Three groups of three, r = read, w = write, x = execute
 4. When stuck: man commandname. The manual always knows
 5. Never put passwords or API keys directly in commands, they get saved in history
 6. rm has no undo. There is no recycle bin
-7. The * wildcard never matches dotfiles. Hidden files need special handling
-8. --include and --exclude only work together with -r
+7. The * wildcard never matches dotfiles. Hidden files need ls -a or find
+8. include and exclude only work together with grep -r
 9. Recursive means find or grep -r
 10. Every problem is: find it, read it, filter it, count it. Pipes connect the steps
+11. cut picks columns, grep picks lines, pipes connect commands
+12. Never replace PATH, always prepend: export PATH="/new/dir:$PATH"
