@@ -19,9 +19,9 @@
 - `!!` → run the most recent command again
 - `!102` → run command number 102 from history
 - `!cat` → run the most recent command that started with "cat"
-- `history -c` clears the in-memory list | `history -w` writes to ~/.bash_history | `history -d &lt;offset&gt;` deletes an entry
+- `history -c` clears the in-memory list | `history -w` writes to ~/.bash_history | `history -d <offset>` deletes an entry
 - `clear` only clears the display. it does NOT erase bash history
-- ⚠️ Commands get stored in history. never type passwords/tokens/secrets directly into commands
+- Warning: Commands get stored in history. never type passwords/tokens/secrets directly into commands
 
 ### cp
 - Copies files/directories, leaving the source in place: `cp [option] source destination`
