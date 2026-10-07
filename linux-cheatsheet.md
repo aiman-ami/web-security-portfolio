@@ -1,5 +1,5 @@
 # Linux Basics Cheat Sheet (Aiman's Edition)
-Covers: Linux Journey command line section, Text Fu section, cmdchallenge battles, and all labs
+Covers: Linux Journey command line section, Text Fu section (lessons 1 to 13), cmdchallenge battles, and all labs
 
 ## Navigation
 | Command | What it does | Example |
@@ -39,7 +39,7 @@ No recycle bin. rm deletes forever. Think twice, especially with rm -rf
 
 ### symbolic links
 - Order is: target first, link name second
-- Verify with ls -l, shows linkname -&gt; target
+- Verify with ls -l, shows linkname -> target
 
 ## Reading Files
 | Command | What it does | Example |
@@ -156,21 +156,21 @@ Every command has three streams:
 ## Output Redirection
 | Operator | What it does | Example |
 |---|---|---|
-| &gt; | Send stdout to a file, OVERWRITES if file exists | ls -l &gt; file_list.txt |
-| &gt;&gt; | Send stdout to a file, APPENDS to the end | echo log &gt;&gt; activity.log |
-| 2&gt; | Send stderr (errors only) to a file | find / -name x 2&gt; errors.txt |
-| 2&gt;&gt; | Append stderr to a file | command 2&gt;&gt; errors.log |
-| &&gt; | Send BOTH stdout and stderr to a file | command &&gt; all_output.txt |
-| &&gt;&gt; | Append both stdout and stderr | command &&gt;&gt; full.log |
-| &gt; file 2&gt;&1 | Old style for both streams (seen in older scripts) | command &gt; file 2&gt;&1 |
-| 2&gt;/dev/null | Throw errors away, show only clean output | find / -name x 2&gt;/dev/null |
+| > | Send stdout to a file, OVERWRITES if file exists | ls -l > file_list.txt |
+| >> | Send stdout to a file, APPENDS to the end | echo log >> activity.log |
+| 2> | Send stderr (errors only) to a file | find / -name x 2> errors.txt |
+| 2>> | Append stderr to a file | command 2>> errors.log |
+| &> | Send BOTH stdout and stderr to a file | command &> all_output.txt |
+| &>> | Append both stdout and stderr | command &>> full.log |
+| > file 2>&1 | Old style for both streams (seen in older scripts) | command > file 2>&1 |
+| 2>/dev/null | Throw errors away, show only clean output | find / -name x 2>/dev/null |
 
 ## Input Redirection
 | Operator | What it does | Example |
 |---|---|---|
-| &lt; | Feed a file as stdin to a command | sort &lt; items.txt |
-| wc &lt; file | vs wc file: with &lt; the command gets a stream, no filename to print | wc -l &lt; items.txt |
-| cat &lt; in &gt; out | Chain input and output redirection | cat &lt; a.txt &gt; b.txt |
+| < | Feed a file as stdin to a command | sort < items.txt |
+| wc < file | vs wc file: with < the command gets a stream, no filename to print | wc -l < items.txt |
+| cat < in > out | Chain input and output redirection | cat < a.txt > b.txt |
 
 ## Pipes and tee
 | Command | What it does | Example |
@@ -184,7 +184,15 @@ Every command has three streams:
 | Command | What it does | Example |
 |---|---|---|
 | sort | Sort lines alphabetically | sort names.txt |
-| uniq | Remove duplicate lines, use after sort | sort names.txt \| uniq |
+| sort -r | Reverse the order | sort -r names.txt |
+| sort -n | Sort numerically (so 2 comes before 10) | sort -n scores.txt |
+| sort -nr | Numeric, largest first | sort -nr scores.txt |
+| sort -h | Sort human sizes such as 500, 1K, 2M | du -h \| sort -h |
+| sort -k | Sort by a key (a field), write it as start,end | sort -k 2,2 file.txt |
+| sort -t | Set the field separator used by -k | sort -t ':' -k 2,2n file.txt |
+| sort -u | Sort and keep one line per equal key | sort -u names.txt |
+| sort -o | Write the result to a file, safe even when it is the input file | sort -o names.txt names.txt |
+| uniq | Remove ADJACENT duplicate lines, so sort first | sort names.txt \| uniq |
 | uniq -c | Count how many times each line appears | sort names.txt \| uniq -c |
 | wc | Count lines, words, characters | wc -l file.txt |
 | cut -c | Select characters by position, starts at 1 | cut -c 1 file |
@@ -194,8 +202,15 @@ Every command has three streams:
 | paste | Join lines from files as columns, default separator is tab | paste names.txt roles.txt |
 | paste -d | Set a custom separator | paste -d ':' a.txt b.txt |
 | paste -s | Serial mode, join all lines of a file into one line | paste -s words.txt |
-| tr | Replace or delete characters | tr a-z A-Z |
-| date | Show current date and time, great for logs | date &gt;&gt; activity.log |
+| tr | Translate characters one for one, reads stdin only | tr a-z A-Z < names.txt |
+| tr -d | Delete every character in the set | echo "abc123" \| tr -d '0-9' |
+| tr -s | Squeeze each run of a character into one | echo "a    b" \| tr -s ' ' |
+| tr -c | Complement the set (everything NOT in it), used with -d to keep only some characters | tr -cd '[:alnum:]\n' < file.txt |
+| expand | Convert tabs to spaces | expand -t 4 file.txt |
+| unexpand | Convert spaces to tabs | unexpand -t 4 file.txt |
+| join | Combine lines of two SORTED files that share a key | join a.txt b.txt |
+| split | Divide one file into smaller files | split -l 500 big.txt part- |
+| date | Show current date and time, great for logs | date >> activity.log |
 | echo | Print text | echo hello |
 
 ### cut and paste notes
@@ -211,6 +226,69 @@ Every command has three streams:
 - find . -maxdepth 1 -type f \| wc -l = count files in current directory
 - grep "GET" access.log \| wc -l = count matching lines
 - sort \| uniq -c \| sort -rn = most common lines first
+
+### sort notes
+- sort never changes its input file, it prints the result to stdout
+- Lexical order compares characters, so 10 comes before 2. Use -n for numbers
+- -k START,END chooses a key. Write -k 2,2 to sort on field 2 only. A bare -k 2 runs to the end of the line
+- Put the type letters after the key: -k 2,2nr = numeric and reversed on field 2
+- -t sets the separator for -k (default is runs of blanks)
+- -f ignores case, -b ignores leading blanks, -V sorts version numbers, -c only checks if input is already sorted
+- LC_ALL=C gives plain byte order, so uppercase comes before lowercase (A B a b). Use it in scripts for repeatable results
+- sort file > file empties the file before sort reads it. Use sort -o file file
+- sort -u -k keeps only the first line of each group of equal keys
+- Recon use: cat subs1.txt subs2.txt | sort -u merges and de-duplicates subdomain lists
+
+### sort -u vs uniq
+- sort -u sorts and removes duplicates in one step
+- uniq removes only ADJACENT duplicates, so unsorted input keeps its duplicates
+- sort | uniq gives the same result as sort -u for plain de-duplication
+- uniq has extras: -c counts each line, -d shows only repeated lines, -u shows only lines that appear once
+- Name clash: sort -u means unique output, uniq -u means only lines never repeated
+
+### tr notes
+- tr works on single characters, never on whole words. tr 'abc' 'xyz' swaps a to x, b to y, c to z, it does not replace the word abc
+- tr reads stdin only, no file operands. Use a pipe or <
+- Syntax: tr [OPTIONS] SET1 [SET2]. With two sets, characters map by position
+- If SET2 is shorter, GNU tr repeats its last character (echo abc | tr abc xy gives xyy)
+- Character classes: [:lower:] [:upper:] [:digit:] [:alpha:] [:alnum:] [:space:] [:punct:]
+- tr -cd '[:alnum:]' also deletes the newline. Keep it with tr -cd '[:alnum:]\n'
+- Escapes such as \n, \t and \r work inside the sets. Quote the sets so the shell does not expand them
+- Windows line endings (CRLF) break scripts: tr -d '\r' < file > clean.txt
+- One word per line: tr -s ' ' '\n' < file
+- rot13: tr 'A-Za-z' 'N-ZA-Mn-za-m' (run it twice to get the original back, Bandit uses it)
+- Changing words needs sed, which comes later
+
+### expand and unexpand notes
+- A tab moves to the next tab stop, it is not a fixed number of spaces. Default tab stop is 8 columns
+- expand -t N = tab stops every N columns. expand -i = convert only leading tabs
+- unexpand converts only leading blanks by default. -a considers blanks anywhere in the line. -t N also turns on -a
+- If a file was made with 4 column stops, use -t 4, otherwise unexpand leaves four spaces as spaces
+- Neither command edits its input. Redirect to a different file, never to the same one
+- cat -A file shows tabs as ^I and line ends as $
+- Makefiles need real tabs, YAML does not allow tabs, Python complains about mixed tabs and spaces
+- cut -f and paste use tab as the default separator, so tabs turned into spaces break them
+
+### join notes
+- join matches lines from two files that share a key field. Both files must be sorted on that field with the same rules
+- Default key is field 1 of each file. -1 N and -2 N choose the key in file 1 and file 2
+- Prepare the input: LC_ALL=C sort -k 1,1 a.txt > a.sorted (and the same for the second file)
+- Example: join -1 2 -2 1 people.txt surnames.txt (people.txt sorted on field 2, surnames.txt on field 1)
+- Output order: key, then the rest of file 1, then the rest of file 2
+- -t CHAR sets a single character separator such as :
+- -a 1 or -a 2 also prints unpaired lines from that file. -v 1 or -v 2 prints ONLY the unpaired lines
+- -o 0,1.2,2.2 chooses the output columns (0 = key, 1.2 = field 2 of file 1). -i ignores case
+- Unsorted input gives a "not sorted" warning and missing matches
+
+### split notes
+- split writes consecutive pieces of one file into new files. It does not change the original
+- Default: 1000 lines per piece, prefix x, names xaa, xab, xac
+- -l N = N lines per piece. -b SIZE = bytes per piece (K, M, G are powers of 1024). -n N = N pieces
+- Last operand is the prefix: split -l 500 big.txt part-
+- -d = numeric suffixes (part-00), -a N = suffix length, --additional-suffix=.txt keeps an extension
+- A lone - reads stdin: cat big.txt | split -l 500 - part-
+- Rebuild: cat part-* > big.txt, then check with cmp or sha256sum
+- split cuts a file in pieces, join combines by key, they are not opposites
 
 ## Users and sudo
 | Command | What it does | Example |
@@ -255,7 +333,7 @@ Every command has three streams:
 - Inline assignment only affects one command: LANG=C sort names.txt
 - set -o allexport = automatically export every variable defined after it
 - .bashrc and .zshrc = startup files, anything in them runs every time a shell opens, this is where aliases, variables and options become permanent
-- noclobber = prevents accidental overwrite of existing files with &gt; (add set -o noclobber to your rc file to make it permanent)
+- noclobber = prevents accidental overwrite of existing files with > (add set -o noclobber to your rc file to make it permanent)
 
 ### PATH rules
 - PATH is a colon-separated list of directories the shell searches for commands
@@ -364,12 +442,30 @@ Every command has three streams:
 | Watch a log that gets rotated | tail -F application.log |
 | Skip the first 4 lines and print the rest | tail -n +5 file |
 | Redo the last command | !! |
-| Errors are flooding my output | add 2&gt;/dev/null to the command |
+| Errors are flooding my output | add 2>/dev/null to the command |
 | Save output to a file AND see it live | command \| tee file.txt |
-| Add a timestamp to a log | date &gt;&gt; logfile |
+| Add a timestamp to a log | date >> logfile |
 | Extract one column from a file | cut -d ':' -f 1 file |
 | Combine two files side by side as columns | paste -d ':' a.txt b.txt |
 | Turn a list into one single line | paste -s words.txt |
+| Sort numbers properly (2 before 10) | sort -n file |
+| Sort by one column of a delimited file | sort -t ':' -k 2,2n file |
+| Remove duplicate lines | sort -u file |
+| Remove duplicates AND count them | sort file \| uniq -c |
+| Sort a file and save over itself safely | sort -o file file |
+| Change the case of text | tr a-z A-Z < file |
+| Delete digits or punctuation | tr -d '[:punct:]' < file |
+| Squeeze repeated spaces into one | tr -s ' ' < file |
+| One word per line | tr -s ' ' '\n' < file |
+| Remove Windows line endings (CRLF) | tr -d '\r' < file > clean.txt |
+| Decode or encode rot13 | tr 'A-Za-z' 'N-ZA-Mn-za-m' |
+| Convert tabs to spaces | expand -t 4 file |
+| Convert spaces to tabs | unexpand -t 4 file |
+| See hidden tabs and line endings | cat -A file |
+| Match records from two files by a shared key | sort both files on the key, then join |
+| Lines in file A with no match in file B | join -v 1 A B |
+| Break a big file into pieces | split -l 500 big.txt part- |
+| Put the pieces back together | cat part-* > big.txt |
 | Command not found | tool missing or not in PATH, try which toolname |
 | Add a folder to PATH safely | export PATH="/new/dir:$PATH" |
 | I forgot how a command works | man commandname |
@@ -396,3 +492,8 @@ Every command has three streams:
 10. Every problem is: find it, read it, filter it, count it. Pipes connect the steps
 11. cut picks columns, grep picks lines, pipes connect commands
 12. Never replace PATH, always prepend: export PATH="/new/dir:$PATH"
+13. join needs both inputs sorted on the join field with the same rules (LC_ALL=C on both)
+14. uniq only removes ADJACENT duplicates. Sort first, or use sort -u
+15. tr works on single characters, not words, and reads only stdin. Use < or a pipe
+16. Never redirect output onto the file being read. sort file > file empties it. Use sort -o or a temp file
+17. Write sort keys as -k 2,2 (start,end). A bare -k 2 runs to the end of the line
