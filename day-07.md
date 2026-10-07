@@ -5,6 +5,7 @@ Four more Text Fu lessons on Linux Journey:
 - Lesson 11: join and split
 - Lesson 12: sort
 - Lesson 13: tr
+- Lab Linux tr Command: Character Translating 
 
 ## What I learned
 
