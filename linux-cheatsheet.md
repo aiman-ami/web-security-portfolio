@@ -1,5 +1,5 @@
 # Linux Basics Cheat Sheet (Aiman's Edition)
-Covers: Linux Journey command line section, Text Fu section (lessons 1 to 13), cmdchallenge battles, and all labs
+Covers: Linux Journey command line section, Text Fu section (complete, lessons 1 to 16), cmdchallenge battles, and all labs
 
 ## Navigation
 | Command | What it does | Example |
@@ -113,6 +113,15 @@ No recycle bin. rm deletes forever. Think twice, especially with rm -rf
 | grep -h | Hide the filename prefix, show only the matching lines | grep -h "500" * |
 | grep -o | Print ONLY the matching part, not the whole line | grep -o "GET" access.log |
 | grep -E | Extended regex mode, enables advanced patterns | grep -E '[0-9]{1,3}' file |
+| grep -c | Count the matching LINES (not the matches) per file | grep -c "error" log.txt |
+| grep -F | Fixed string, no regex, special characters are literal | grep -F 'price: $5.00' products.txt |
+| grep -e | Give the pattern explicitly, needed when it starts with - | grep -e '-v' settings.conf |
+| grep -w | Match whole words only | grep -w "root" /etc/passwd |
+| grep -x | Match whole lines only | grep -x "done" file.txt |
+| grep -A / -B / -C | Show N lines After, Before or around (Context) a match | grep -C 2 "error" log.txt |
+| grep -L | List files that do NOT contain a match (capital L) | grep -rL "license" . |
+| grep -q | Quiet, no output, only the exit status | grep -q "root" /etc/passwd |
+| grep -s | Hide error messages about missing or unreadable files | grep -rs "word" . |
 
 ### grep file filtering flags (need -r to work)
 - include = only search files matching a pattern
@@ -194,7 +203,13 @@ Every command has three streams:
 | sort -o | Write the result to a file, safe even when it is the input file | sort -o names.txt names.txt |
 | uniq | Remove ADJACENT duplicate lines, so sort first | sort names.txt \| uniq |
 | uniq -c | Count how many times each line appears | sort names.txt \| uniq -c |
-| wc | Count lines, words, characters | wc -l file.txt |
+| uniq -d | Print one copy of each repeated line | sort names.txt \| uniq -d |
+| uniq -u | Print only the lines that appear exactly once | sort names.txt \| uniq -u |
+| uniq -i | Ignore case when comparing lines | sort -f names.txt \| uniq -i |
+| wc | Count lines, words, bytes | wc file.txt |
+| wc -l / -w / -c / -m | Count only lines, words, bytes, or characters | wc -l file.txt |
+| nl | Number the NONEMPTY lines | nl notes.txt |
+| nl -ba | Number ALL lines, blank ones too | nl -ba notes.txt |
 | cut -c | Select characters by position, starts at 1 | cut -c 1 file |
 | cut -f | Select fields, default delimiter is tab | cut -f 2 file |
 | cut -d | Set a custom delimiter for field mode | cut -d ':' -f 1 /etc/passwd |
@@ -220,7 +235,9 @@ Every command has three streams:
 - cut picks columns, grep picks lines
 
 ### wc flags
-- l = lines only, w = words only, c = bytes only
+- l = lines only (counts newline characters), w = words only, c = bytes only
+- m = characters according to the current locale, L = width of the longest line (GNU)
+- No flag = lines, words, bytes, then the filename
 
 ### counting with pipes
 - find . -maxdepth 1 -type f \| wc -l = count files in current directory
@@ -245,6 +262,46 @@ Every command has three streams:
 - sort | uniq gives the same result as sort -u for plain de-duplication
 - uniq has extras: -c counts each line, -d shows only repeated lines, -u shows only lines that appear once
 - Name clash: sort -u means unique output, uniq -u means only lines never repeated
+
+### uniq notes
+- uniq compares each line with the line right before it. It never looks for duplicates that are far apart
+- -c = prefix each group with its count, -u = only groups of exactly one line, -d = one copy of each repeated group, -D = every line of the repeated groups
+- -i ignores case, -f N skips the first N fields, -s N skips the first N characters, -w N compares at most N characters
+- Use -f, -s and -w only when equality should depend on part of the line
+- Reads stdin when no file is named, so it follows sort in a pipe
+- The second file operand is an OUTPUT file. uniq a.txt b.txt overwrites b.txt. Use > to save results
+- If neighboring lines all differ, nothing is collapsed
+- Most common lines: sort file | uniq -c | sort -rn
+
+### wc and nl notes
+- wc with no option prints newline count (lines), words, bytes, then the filename
+- Output order is always lines, words, characters, bytes, whatever order the flags are written in
+- -c counts bytes, -m counts characters. They differ for non-ASCII text (an accented letter is 2 bytes in UTF-8)
+- wc -l counts newline characters, so a last line without a newline is not counted
+- Several files give one line each plus a total line
+- With < or a pipe, wc has no filename, so only the numbers print
+- nl numbers NONEMPTY lines by default, blank lines are kept but not numbered
+- nl -ba numbers all lines. Body styles for -b: a = all, t = nonempty (default), n = none, pREGEX = lines matching a regex
+- nl -n ln, rn, rz = number format (left, right, right with zeros), -w N = number width, -s STR = separator, -v N = start number, -i N = step
+- Other line numbering: cat -n numbers all lines, cat -b numbers nonempty lines, grep -n shows the original line numbers of matches
+
+### grep notes
+- Syntax: grep PATTERN FILE... . Without a file, grep reads stdin
+- Default pattern mode = basic regex. -E = extended regex (| + ? without backslashes). -F = fixed string, nothing is special
+- Quote patterns with single quotes so the shell leaves them alone
+- Use -F when the text has . * $ or other characters that must be taken literally
+- Anchors: ^ = start of line, $ = end of line. Example: grep -E '\.txt$' filenames.txt
+- A pattern that starts with - needs -e: grep -e '-v' file. grep -- '-v' file also works
+- More than one pattern: grep -e error -e warning log.txt
+- -c counts LINES, not matches. A line with fox fox counts once. To count matches: grep -o PATTERN \| wc -l
+- -w = whole words, -x = whole lines, -l = files with a match, -L = files without a match, -s = hide file errors
+- Context: -A N lines after, -B N lines before, -C N both sides
+- -r searches recursively. In a pipe: env \| grep '^USER='
+- Exit status: 0 = at least one line selected, 1 = no line selected, 2 = error. Check with echo $?
+- -q prints nothing and stops at the first match. Script use: if grep -q 'root' /etc/passwd; then echo found; fi
+- Never trust an empty screen alone. A no match and an error can look the same, only the exit status tells them apart
+- ps aux \| grep nginx also matches the grep command itself. grep '[n]ginx' avoids that
+- Secrets hunt in code and files I am allowed to test: grep -rniE 'password\|secret\|token\|api[_-]?key' .
 
 ### tr notes
 - tr works on single characters, never on whole words. tr 'abc' 'xyz' swaps a to x, b to y, c to z, it does not replace the word abc
@@ -427,12 +484,24 @@ Every command has three streams:
 | Search for a word inside files | grep "word" file.txt |
 | Search for a word in ALL files including subfolders | grep -r "word" . |
 | Which files contain this word (names only) | grep -rl "word" . |
+| Which files do NOT contain this word | grep -rL "word" . |
 | Show matching lines without file paths | grep -rh "word" files |
 | Pull out only IPs, emails, tokens from text | grep -hoE 'pattern' file |
 | Search only certain files by name | grep -r "word" --include="*.log" . |
 | Case does not matter | grep -i |
-| Count how many lines match | grep "word" file \| wc -l |
+| Count how many lines match | grep -c "word" file |
+| Count matches, not lines | grep -o "word" file \| wc -l |
+| Match a whole word only | grep -w "word" file |
+| See lines around a match | grep -C 3 "word" file |
+| Search text with . * or $ in it, taken literally | grep -F 'price: $5.00' file |
+| Pattern starts with a dash | grep -e '-v' file |
+| Check silently if something matches (scripts) | grep -q "word" file, then check $? |
+| Hunt for secrets in code I am allowed to test | grep -rniE 'password\|secret\|token' . |
 | Most common lines in a file | sort file \| uniq -c \| sort -rn |
+| Show only duplicated lines | sort file \| uniq -d |
+| Show only lines that appear once | sort file \| uniq -u |
+| Count lines, words, bytes of a file | wc file |
+| Number the lines of a file | nl -ba file |
 | Filename starts with a dash | cat ./-file07 (./ in front) |
 | Filename has spaces | cat "my file.txt" (quotes) |
 | File is hidden | ls -a to see it |
@@ -497,3 +566,7 @@ Every command has three streams:
 15. tr works on single characters, not words, and reads only stdin. Use < or a pipe
 16. Never redirect output onto the file being read. sort file > file empties it. Use sort -o or a temp file
 17. Write sort keys as -k 2,2 (start,end). A bare -k 2 runs to the end of the line
+18. grep -c counts lines, not matches. Use grep -o with wc -l to count matches
+19. A grep pattern starting with - needs -e. A pattern with special characters needs -F
+20. grep exit status: 0 match, 1 no match, 2 error. Do not trust an empty screen, check $?
+21. wc -l counts newline characters. wc -c counts bytes, wc -m counts characters
