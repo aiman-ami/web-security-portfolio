@@ -1,5 +1,5 @@
 # Linux Basics Cheat Sheet (Aiman's Edition)
-Covers: Linux Journey command line section, Text Fu section (complete, lessons 1 to 16), cmdchallenge battles, and all labs
+Covers: Linux Journey command line section, Text Fu section (complete, lessons 1 to 16), Advanced Text-Fu (regex and editors), cmdchallenge battles, and all labs
 
 ## Navigation
 | Command | What it does | Example |
@@ -255,6 +255,131 @@ Every command has three streams:
 - sort file > file empties the file before sort reads it. Use sort -o file file
 - sort -u -k keeps only the first line of each group of equal keys
 - Recon use: cat subs1.txt subs2.txt | sort -u merges and de-duplicates subdomain lists
+
+## Regular Expressions (regex)
+- Regex describes text patterns. grep, sed and awk all use it, but the syntax differs a little between tools, so always identify the tool and the regex flavor
+- Regex is NOT the same as shell wildcards (globs). In a regex, * repeats the thing before it. In a glob, * is itself a wildcard for any string of characters in a filename
+
+| Pattern | What it matches | Example |
+|---|---|---|
+| ^ | Start of a line | grep '^by' file.txt |
+| $ | End of a line | grep 'seashore$' file.txt |
+| ^text$ | The whole line must be exactly this | grep '^by the seashore$' file.txt |
+| . | Any one character | grep 'b.' file.txt |
+| [abc] | One character from the set | grep 's[ae]lls' file.txt |
+| [^abc] | One character NOT in the set (^ must be first inside the brackets) | grep 's[^e]lls' file.txt |
+| [a-c] | One character in the range | grep 'd[a-c]g' file.txt |
+| [[:lower:]] | Character class: lowercase letters (also [[:upper:]], [[:digit:]]) | grep '[[:digit:]]' file.txt |
+| * | Zero or more of the previous item | grep 'seashells*' file.txt |
+| + (ERE) | One or more of the previous item | grep -E 'ab+' file.txt |
+| ? (ERE) | Zero or one of the previous item | grep -E 'colou?r' file.txt |
+| \| (ERE) | Either the left or the right expression | grep -E 'cat\|dog' file.txt |
+| (...) (ERE) | Group expressions | grep -E '^(cat\|dog)s?$' animals.txt |
+| \. | A literal dot (escaped) | grep '\.txt$' filenames.txt |
+
+### regex notes
+- Two flavors in grep: BRE (basic, the default) and ERE (extended, grep -E). In ERE, + ? | and ( ) work without backslashes. Use grep -E for anything beyond simple patterns
+- seashells* means seashell followed by zero or more extra s characters
+- Inside a bracket expression, ^ only negates when it is the first character after [
+- Character classes such as [[:digit:]] often say the intent more clearly than ranges
+- Always quote regex patterns with single quotes so the shell does not touch them
+- Escape a special character with a backslash to match it literally (\. for a dot), or use grep -F for plain text
+- .* means any run of characters
+- {n,m} repeats the previous item n to m times in ERE: grep -E '[0-9]{1,3}' file.txt
+- Remove blank lines: grep -v '^$' file.txt. Count blank lines: grep -c '^$' file.txt
+- Hide comment lines in a config file: grep -v '^#' file.conf
+
+## Text Editors (nano, vim, emacs)
+- Do not assume vim or emacs is installed. Check with: command -v vim
+- Many programs start the editor named in VISUAL or EDITOR. Set it for the current Bash session and its children:
+  - export VISUAL=vim
+  - export EDITOR="$VISUAL"
+- Practice on a disposable file in a directory I own: printf 'first line\nsecond line\n' > editor-practice.txt, then vim editor-practice.txt
+- Never start with system config or another user's data. Back up important files first (cp file file.bak). Know how to save and exit before editing. Review the result with cat or diff
+
+### nano vs vim
+- Use nano when: new to Linux editing, quick simple edits, occasional config changes, I want a simple interface
+- Use vim (vi) when: extensive text manipulation, working on remote servers (vi is almost always there), I need macros, plugins or complex search and replace, speed matters once I know the keys
+
+### vim: modes
+- Vim is modal. The same key does different things in different modes
+- Normal mode: keys are navigation and editing commands (where vim starts)
+- Insert mode: typed characters become text (Esc returns to Normal mode)
+- Command-line mode: starts with : for commands like save and quit
+- Vim means Vi Improved: it keeps vi's modal editing and adds multilevel undo, syntax support, scripting and a big help system
+- Help: :help, Ctrl+] follows a help link, Ctrl+T goes back
+
+### vim: saving and quitting
+| Command | What it does |
+|---|---|
+| :w | Write (save) the file |
+| :q | Quit (fails if there are unsaved changes) |
+| :wq | Save and quit |
+| :q! | Quit and throw away unsaved changes |
+| :x or ZZ | Save only if modified, then quit |
+| :w copy.txt | Write to another file, the buffer keeps its current name |
+| :saveas copy.txt | Write to a new file and switch the buffer to that name |
+| :qa, :wqa, :qa! | Act on all windows. Review every modified buffer before forcing with :qa! |
+
+### vim: moving (Normal mode)
+| Keys | What it does |
+|---|---|
+| h j k l | Left, down, up, right |
+| gj, gk | Down or up by screen line on wrapped lines |
+| w, b, e | Next word start, previous word start, word end |
+| 0, ^, $ | Column zero, first nonblank character, end of line |
+| gg, G, 42G | First line, last line, line 42 |
+| Ctrl+F, Ctrl+B | Forward and back about one screen |
+
+### vim: inserting
+| Keys | What it does |
+|---|---|
+| i, a | Insert before or after the cursor |
+| I, A | Insert at the first nonblank character or at the end of the line |
+| o, O | Open a new line below or above and start inserting |
+
+### vim: editing
+- General form: [count] operator [count] motion
+- Operators: d = delete, c = change (delete then insert), y = yank (copy)
+
+| Keys | What it does |
+|---|---|
+| x | Delete the character under the cursor |
+| dd, 3dd | Delete the current line, delete 3 lines |
+| cc | Change the whole line |
+| ce, c$ | Change to the end of the word, change to the end of the line |
+| ciw, caw | Change the inner word, change the word plus surrounding space |
+| r{char}, R | Replace one character, enter Replace mode until Esc |
+| yy, yw | Yank a line, yank through a word |
+| p, P | Put (paste) after or before the cursor, or below or above for whole lines |
+| u, Ctrl+R | Undo, redo |
+| . | Repeat the last change |
+| J | Join the current line with the next one |
+
+### vim: searching
+| Keys | What it does |
+|---|---|
+| /pattern | Search forward, then Enter |
+| ?pattern | Search backward from the cursor (not "the last match in the file") |
+| n, N | Repeat in the same direction, repeat in the opposite direction |
+| *, # | Search forward or backward for the whole word under the cursor |
+| :set ignorecase | Ignore case in searches |
+| :set smartcase | With ignorecase, an uppercase letter turns case sensitivity back on |
+| \c, \C | Inside a pattern: force ignore case, force respect case |
+| :nohlsearch | Clear highlights without losing the search pattern |
+| :set nowrapscan | Stop searches wrapping around the file ends |
+
+- Vim searches use vim's own regex syntax, so . * [ \ can be special. Start a pattern with \V to treat the rest as plain text (very nomagic) or escape characters on purpose
+- Replace everywhere in the file: :%s/old/new/g
+- Show line numbers: :set number
+
+### emacs (awareness only, L1)
+- Emacs is an extensible editor customized with Emacs Lisp. Start it with emacs, or emacs -nw to stay inside the terminal instead of opening a graphical window
+- Objects: buffer = text or editor state (an open file lives in a buffer), window = an area showing a buffer, frame = a top-level display
+- Notation: C-x = hold Control and press x, M-x = hold Meta (usually Alt) and press x, C-x C-f = Control+x then Control+f
+- Tutorial: C-h t. Help prefix: C-h, and C-h C-h shows help about help
+- Basic survival keys: C-x C-f open a file, C-x C-s save, C-x C-c quit, C-g cancel the current command
+- Not needed for my goals. Vim and nano are enough
 
 ### sort -u vs uniq
 - sort -u sorts and removes duplicates in one step
