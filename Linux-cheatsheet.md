@@ -472,6 +472,56 @@ Every command has three streams:
 - Rebuild: cat part-* > big.txt, then check with cmp or sha256sum
 - split cuts a file in pieces, join combines by key, they are not opposites
 
+## Commands from the Command Challenge and Bandit
+| Command | What it does | Example |
+|---|---|---|
+| find ... -exec CMD {} \; | Run a command once per file found. {} is the file path, \; ends the command | find . -name "*.txt" -exec cat {} \; |
+| basename | Strip the directory, keep the file name | basename ./docs/b.txt gives b.txt |
+| dirname | Strip the file name, keep the directory | dirname ./docs/b.txt gives ./docs |
+| find -printf | Print in my own format. %f = file name only, %h = directory only | find . -type f -printf '%f\n' |
+| sed 's/old/new/g' | Replace text. g = every match on a line. Nothing between the last slashes deletes the text | sed 's/cat/dog/g' file.txt |
+| sed -i | Same, but edits the file itself (no undo) | sed -i 's/cat/dog/g' file.txt |
+| bc | Command line calculator, reads math from stdin | echo "3+5" \| bc |
+| sh -c | Run a text as a command in a small shell. The first argument after the text is $0 | sh -c 'echo "$0"' hello |
+| ${var%.*} | Remove the shortest match of .anything from the END of the value | ${0%.*} turns a.txt into a |
+| strings | Print the readable text inside a binary file | strings data.txt |
+| base64 -d | Decode base64 text | base64 -d data.txt |
+| find -user -group | Search by owner and group | find / -user alice -group staff -size 33c 2>/dev/null |
+| find ! -executable | ! negates a test | find . -type f -size 1033c ! -executable |
+
+### find -exec patterns
+- How it works: find lists the files, -exec runs the command once per file, {} becomes the path, \; ends the command
+- Delete a phrase from every .txt file: find . -type f -name "*.txt" -exec sed -i 's/phrase//g' {} \;
+- Print only file names, recursively: find . -type f -exec basename {} \;
+- Directories that contain .tf files, no duplicates: find . -name "*.tf" -exec dirname {} \; | sort -u
+- Remove extensions: find . -type f -exec sh -c 'mv "$0" "${0%.*}"' {} \; (breaks on files with no extension)
+- Files whose names start with a number: find . -type f -name "[0-9]*" -exec basename {} \;
+- Sum of numbers, one per line: paste -sd+ file | bc
+- List files with spaces turned into dots: ls | tr " " "."
+
+### sed, sh -c and ${var%.*} notes
+- sed edits words and phrases, tr only swaps single characters
+- sed -i changes the file in place. Back up important files first
+- -exec runs a program directly, without a shell, so shell syntax such as ${0%.*} needs sh -c
+- With sh -c 'text' arg, arg becomes $0 inside the text. Single quotes stop my own shell from expanding it too early
+- ${var%pattern} removes the shortest match from the end. ${var%%pattern} removes the longest match from the end
+- rm -rf **/*.txt is NOT a way to delete a phrase. It deletes whole files, and ** only works when globstar is on
+
+### find -size units
+- c = bytes, k = kilobytes, b = 512-byte blocks (not bytes)
+- + means bigger than, - means smaller than: -size +1M, -size -10k
+- One wrong letter finds nothing. -size 33c and -size 33b are very different
+
+### Bandit notes (levels 3 to 10)
+- Hidden file names cannot be guessed. Use ls -a and read the exact name
+- file ./* tells what each file really is (ASCII text or data). Names starting with a dash need ./
+- find / searches the whole server and floods the screen with Permission denied. Add 2>/dev/null
+- grep prints the whole matching line, so copy only the password part
+- sort file | uniq -u prints only the lines that appear once. uniq needs sorted input
+- strings file | grep "marker" pulls readable text out of a binary file
+- base64 is an encoding, not encryption. Anyone can reverse it with base64 -d
+- Never put passwords in the repo. Keep them in a notes file outside it
+
 ## Users and sudo
 | Command | What it does | Example |
 |---|---|---|
