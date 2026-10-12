@@ -12,8 +12,7 @@ Every topic has a target level. The level says how deep to go, so nothing is vag
 
 Rules:
 1. Never skip ticking. The tick IS my motivation system
-2. Practice first, notes second. A day note is short: the level, the command that worked, where I got stuck
-3. Month ranges are targets, not deadlines. Moving on when a level is reached matters more than the date
+2. Month ranges are targets, not deadlines. Moving on when a level is reached matters more than the date
 
 ---
 
