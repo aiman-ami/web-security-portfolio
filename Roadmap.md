@@ -49,7 +49,7 @@ Rule: try each level for 10 to 15 minutes without the cheat sheet, then look thi
 
 ### 1C. Networking basics (start after Bandit 10, run alongside Bandit 11 to 20)
 - [ ] IP address, ports, DNS: what they are and how a name becomes an address (L2)
-- [ ] TCP vs UDP at a basic level (L1)
+- [x] TCP vs UDP at a basic level (L1)
 - [ ] HTTP and HTTPS: requests, responses, methods (GET and POST), status codes, headers, cookies (L3, the most important item in Phase 1)
 - [ ] Browser DevTools: the Network tab, reading a request and a response (L3)
 - [ ] `curl -v`: see a full request and response in the terminal (L3)
