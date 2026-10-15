@@ -43,18 +43,18 @@ Rule: try each level for 10 to 15 minutes without the cheat sheet, then look thi
 - [x] Level 4: `file` command to find the data file (L3)
 - [x] Level 5: `find` with the size flag (L3)
 - [x] Levels 6 to 10: `find` with permissions, `grep`, `sort` and `uniq`, `base64`, `tr` and rot13, `gzip` (L3)
-- [ ] Levels 11 to 15: cron, git, passwords (L2)
+- [x] Levels 11 to 15: cron, git, passwords (L2)
 - [ ] Levels 16 to 20: `nc`, `openssl`, port knocking (L2)
 - [ ] Levels 21 to 34: finish the game (optional but powerful) (L2)
 
 ### 1C. Networking basics (start after Bandit 10, run alongside Bandit 11 to 20)
-- [ ] IP address, ports, DNS: what they are and how a name becomes an address (L2)
+- [x] IP address, ports, DNS: what they are and how a name becomes an address (L2)
 - [x] TCP vs UDP at a basic level (L1)
 - [x] HTTP and HTTPS: requests, responses, methods (GET and POST), status codes, headers, cookies (L3, the most important item in Phase 1)
 - [x] Browser DevTools: the Network tab, reading a request and a response (L3)
 - [x] `curl -v`: see a full request and response in the terminal (L3)
-- [ ] `ping` and `dig` (or `nslookup`): check if a host is up and look up a DNS name (L2)
-- [ ] SSH: keys, ports, config basics (L2)
+- [x] `ping` and `dig` (or `nslookup`): check if a host is up and look up a DNS name (L2)
+- [x] SSH: keys, ports, config basics (L2)
 
 **Resources:** NetworkChuck networking videos, Linux Journey "Networking Nomad" section
 
