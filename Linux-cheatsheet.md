@@ -767,6 +767,45 @@ Extra notes:
 - TCP when everything must arrive (web, login). UDP when speed matters more (video calls).
 - `tr 'A-Za-z' 'N-ZA-Mn-za-m'` undoes rot13.
 
+## Unpacking and inspecting files
+
+| Command | What it does | Example |
+|---|---|---|
+| `xxd -r` | Reverses a hexdump back into the original file | `xxd -r data.txt > data` |
+| `file` | Shows what kind of file it is, whatever its name | `file data` |
+| `gzip -d` | Decompresses a `.gz` file | `gzip -d data.gz` |
+| `bzip2 -d` | Decompresses a `.bz2` file | `bzip2 -d data.bz2` |
+| `tar xf` | Extracts a tar archive | `tar xf data` |
+
+### Unpacking notes
+
+- `file` reads the content, not the name. Use it after every step to see which tool comes next.
+- `gzip -d` and `bzip2 -d` need the matching file ending, so rename first with `mv`. `tar xf` does not.
+- Work in a copy inside `/tmp` so the original stays untouched.
+
+## Network and remote commands
+
+| Command | What it does | Example |
+|---|---|---|
+| `ping -c 4` | Sends 4 requests to check whether a host is up | `ping -c 4 example.com` |
+| `dig` | Looks up the DNS records of a name | `dig example.com` |
+| `dig +short` | Shows only the answers | `dig example.com +short` |
+| `nslookup` | Another DNS lookup tool | `nslookup example.com` |
+| `nc` | Opens a plain TCP connection to a port | `nc localhost 30000` |
+| `openssl s_client -connect` | Opens a TLS connection to a port | `openssl s_client -connect localhost:30001` |
+| `ssh -i` | Logs in using a key file | `ssh -i sshkey.private user@host -p 2220` |
+| `scp -P` | Copies a file over SSH | `scp -P 2220 user@host:sshkey.private .` |
+| `chmod 600` | Makes a file readable and writable by the owner only | `chmod 600 sshkey.private` |
+
+### Network command notes
+
+- `ssh` uses a lowercase `-p` for the port, `scp` uses a capital `-P`.
+- In `openssl s_client`, the host and port are one piece joined by a colon: `localhost:30001`.
+- `nc` and `openssl s_client` wait silently for you to type. Leave with Ctrl+C.
+- SSH refuses a private key that other users can read, so run `chmod 600` on it.
+- If `dig` is missing: `sudo apt install bind9-dnsutils`. If the install gives a 404, run `sudo apt update` first.
+- The `~/.ssh/config` shortcut file is in `networking-cheatsheet.md`.
+
 ## Situations: What do I use?
 | Situation | Command |
 |---|---|
