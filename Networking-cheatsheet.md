@@ -49,6 +49,41 @@ Concepts from roadmap 1C. Linux commands are in `linux-cheatsheet.md`.
 | `TCP` | Makes a connection first, confirms delivery, resends lost data | Web pages, logins |
 | `UDP` | No connection, no confirmation, some data may be lost, but fast | Video calls, online games |
 
+## DNS
+
+| Term | What it does | Example |
+|---|---|---|
+| IP address | The real address of a machine | `104.20.23.154` |
+| Domain name | The easy name for people | `example.com` |
+| DNS | Turns a name into IP addresses | `dig example.com` |
+| `A` record | Maps a name to an IPv4 address | `example.com. 109 IN A 104.20.23.154` |
+| TTL | Seconds an answer may be reused before asking again | `109` |
+
+## Ports and SSH config
+
+| Item | What it does | Example |
+|---|---|---|
+| Port | A numbered door on a machine, with a program listening behind it | `30000` |
+| Port 22 | Default SSH port | `ssh user@host` |
+| Port 443 | Default HTTPS port | `https://example.com` |
+| `~/.ssh/known_hosts` | SSH's memory of servers it has connected to | Filled when you answer `yes` |
+| `~/.ssh/config` | Shortcuts for long SSH commands | See below |
+
+### DNS and SSH notes
+
+- DNS only returns an address. After that, the browser connects to the IP on a port and the server sends the page.
+- One name can have several `A` records.
+- Example config block, then `ssh bandit` replaces the long command:
+
+```
+Host bandit
+    HostName bandit.labs.overthewire.org
+    Port 2220
+    User bandit15
+```
+
+- Without a `Port` line, SSH uses port 22.
+
 ### HTTP notes
 
 - Status code families: 2xx success, 3xx redirect, 4xx client problem, 5xx server problem.
