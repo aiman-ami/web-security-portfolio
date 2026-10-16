@@ -92,3 +92,20 @@ Host bandit
 - Hard reload in the browser: Ctrl+Shift+R. It ignores the saved copy, so the status becomes 200 again.
 - TCP analogy: a phone call. UDP analogy: postcards.
 - HTTP/3 runs on QUIC, which uses UDP and adds its own reliability.
+
+## Python requests
+
+| Code | What it does | Example |
+|---|---|---|
+| `requests.get(url)` | Sends a GET request | `r = requests.get("https://example.com")` |
+| `r.status_code` | The status code of the response | `200` |
+| `r.headers["name"]` | One response header | `r.headers["content-type"]` |
+| `r.text` | The response body as text | `r.text[:200]` |
+| `requests.post(url, data=...)` | Sends a POST request with data in the body | `requests.post("https://httpbin.org/post", data={"name": "aiman"})` |
+| `r.json()` | Turns a JSON response into a Python dictionary | `r.json()["form"]` |
+
+### Python requests notes
+
+- Same results as `curl -v`: status code, headers and body.
+- `data={...}` is the same as `curl -d`.
+- Check that the library is installed with `python3 -c "import requests; print(requests.__version__)"`.
