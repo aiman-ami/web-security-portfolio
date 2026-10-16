@@ -806,6 +806,24 @@ Extra notes:
 - If `dig` is missing: `sudo apt install bind9-dnsutils`. If the install gives a 404, run `sudo apt update` first.
 - The `~/.ssh/config` shortcut file is in `networking-cheatsheet.md`.
 
+## Comparing files and scanning ports
+
+| Command | What it does | Example |
+|---|---|---|
+| `diff` | Shows only the lines that differ between two files | `diff passwords.old passwords.new` |
+| `nmap -p` | Scans a port range and lists the open ports | `nmap -p 31000-32000 localhost` |
+| `nmap -sV` | Detects the service running on each open port | `nmap -sV -p 31046,31518 localhost` |
+| `openssl s_client -quiet` | Opens a TLS connection without treating typed text as commands | `openssl s_client -connect localhost:31790 -quiet` |
+| `ssh user@host command` | Runs one command on the server and prints the result | `ssh bandit18@bandit cat readme` |
+
+### Scanning and comparing notes
+
+- In `diff` output, `<` lines come from the first file and `>` lines from the second.
+- `nmap -A` also works but runs many extra checks and is slower than `-sV`.
+- Without `-quiet`, `openssl s_client` can read a line starting with certain letters (such as `k` or `R`) as its own command instead of sending it.
+- A command after `ssh` runs on the server, so it works even when the login session closes at once.
+- Only scan machines you have permission to scan.
+
 ## Situations: What do I use?
 | Situation | Command |
 |---|---|
