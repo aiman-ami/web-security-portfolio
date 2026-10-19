@@ -109,3 +109,29 @@ Host bandit
 - Same results as `curl -v`: status code, headers and body.
 - `data={...}` is the same as `curl -d`.
 - Check that the library is installed with `python3 -c "import requests; print(requests.__version__)"`.
+
+## Python error handling
+
+| Code | What it does | Example |
+|---|---|---|
+| `try:` | Runs the code under it | `try:` |
+| `except ErrorName:` | Runs only if the named error happens, instead of crashing | `except requests.exceptions.ConnectionError:` |
+| `r.headers.get("name")` | Reads a header and returns `None` if it is missing | `r.headers.get("content-type")` |
+
+### Python error handling notes
+
+- Read a traceback from the last line upward. The last line names the error.
+- `ConnectionError` with `Failed to resolve` means the DNS step failed, so the name gave no IP address.
+- Put code that uses `r` inside the `try`. If `requests.get` fails, `r` does not exist and the later lines raise `NameError`.
+- Indent the lines under `try` and `except` with 4 spaces.
+- Test both paths: a real site and a site that does not exist.
+
+```python
+import requests
+try:
+    r = requests.get("https://github.com")
+    print("Status code:", r.status_code)
+    print("Content-Type:", r.headers.get("content-type"))
+except requests.exceptions.ConnectionError:
+    print("Got a DNS error, no such site, try again")
+```
