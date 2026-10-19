@@ -824,6 +824,24 @@ Extra notes:
 - A command after `ssh` runs on the server, so it works even when the login session closes at once.
 - Only scan machines you have permission to scan.
 
+## Permissions and listening on a port
+
+| Command | What it does | Example |
+|---|---|---|
+| `ls -l` | Shows permissions, owner and group of a file | `ls -l bandit20-do` |
+| `id` | Shows the current user and the effective user (`euid`) | `./bandit20-do id` |
+| `nc -l` | Listens on a port so another program can connect to me | `nc -l 9999` |
+| `nc -lv` | Listens and prints a message when something connects | `nc -lv 9999` |
+
+### Permissions and listening notes
+
+- An `s` where the owner's `x` would be (`-rwsr-x---`) is the setuid bit. The program runs as its owner, not as the user who starts it.
+- A setuid program that runs any command hands over the owner's access, so it is a common target in security work.
+- `euid` is the effective user, meaning who a program is really acting as.
+- `nc -lvp 9999` works on some versions of `nc`, but others reject `-l` together with `-p`. `nc -lv 9999` is the safe form.
+- Use a port between 1025 and 65535 that is not already in use.
+- To test a listener you need a second terminal to connect to it.
+
 ## Situations: What do I use?
 | Situation | Command |
 |---|---|
