@@ -88,25 +88,6 @@ Extra notes:
 - `Failed to resolve` means the DNS step failed (name in, no IP address out), so it never reached the connect step.
 - This is not a finished script yet. The URL is fixed in the code, there is no `timeout`, and only the connection error is caught.
 
-### Ubuntu (WSL) stopped starting
-
-Ubuntu closed on its own, and the window showed `WslRegisterDistribution failed with error: 0x8007019e` and said the Windows Subsystem for Linux is not installed. The files were not lost, because they live in Ubuntu's own disk image.
-
-Fix, in PowerShell opened as administrator:
-
-```powershell
-wsl --status
-dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
-dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
-shutdown /r /t 0
-```
-
-Extra notes:
-
-- `wsl --status` still listed `Ubuntu` as the default distribution, which showed it was still registered.
-- Do not run `wsl --unregister`, because it deletes the distribution and all its files.
-- A likely cause is a Windows update that switched off optional features, but I could not confirm it.
-- A harmless warning about the systemd user session appeared after the restart.
 
 ## Key takeaways
 
