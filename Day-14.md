@@ -34,12 +34,12 @@ Idea: the program `suconnect` connects to a port on localhost, reads a line, com
 
 ```bash
 # Terminal 1
-$ nc -lv 4444
+$ nc -lv 9999
 # Terminal 2
-$ ./suconnect 4444
+$ ./suconnect 9999
 ```
 
-How it works: in terminal 1, `nc -l` listens on a port I choose (`-v` prints a message when something connects). In terminal 2, `./suconnect 4444` connects to that port. When "connection received" shows in terminal 1, I type the current password there and press Enter. `suconnect` checks it and sends the next password back to the listener.
+How it works: in terminal 1, `nc -l` listens on a port I choose (`-v` prints a message when something connects). In terminal 2, `./suconnect 9999` connects to that port. When "connection received" shows in terminal 1, I type the current password there and press Enter. `suconnect` checks it and sends the next password back to the listener.
 
 My notes: I needed two terminals, both logged in as bandit20.
 
