@@ -44,7 +44,7 @@ Rule: try each level for 10 to 15 minutes without the cheat sheet, then look thi
 - [x] Level 5: `find` with the size flag (L3)
 - [x] Levels 6 to 10: `find` with permissions, `grep`, `sort` and `uniq`, `base64`, `tr` and rot13, `gzip` (L3)
 - [x] Levels 11 to 15: cron, git, passwords (L2)
-- [ ] Levels 16 to 20: `nc`, `openssl`, port knocking (L2)
+- [X] Levels 16 to 20: `nc`, `openssl`, port knocking (L2)
 - [ ] Levels 21 to 34: finish the game (optional but powerful) (L2)
 
 ### 1C. Networking basics (start after Bandit 10, run alongside Bandit 11 to 20)
