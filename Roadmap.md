@@ -59,8 +59,8 @@ Rule: try each level for 10 to 15 minutes without the cheat sheet, then look thi
 **Resources:** NetworkChuck networking videos, Linux Journey "Networking Nomad" section
 
 ### 1D. Programming (only enough to read and write small tools)
-- [ ] Python: add the `requests` library to what I already know. Send a GET and a POST, read headers and cookies (L2)
-- [ ] Bash scripting: variables, `if`, `for` loops, running a command on every line of a file (L2)
+- [x] Python: add the `requests` library to what I already know. Send a GET and a POST, read headers and cookies (L2)
+- [x] Bash scripting: variables, `if`, `for` loops, running a command on every line of a file (L2)
 - [ ] Git: clone, add, commit, push, log, diff (L2)
 - [ ] JavaScript: read a small script, understand the DOM, events and `fetch` (L2, needed for XSS in Phase 2)
 
