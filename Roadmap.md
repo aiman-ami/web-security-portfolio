@@ -45,7 +45,7 @@ Rule: try each level for 10 to 15 minutes without the cheat sheet, then look thi
 - [x] Levels 6 to 10: `find` with permissions, `grep`, `sort` and `uniq`, `base64`, `tr` and rot13, `gzip` (L3)
 - [x] Levels 11 to 15: cron, git, passwords (L2)
 - [X] Levels 16 to 20: `nc`, `openssl`, port knocking (L2)
-- [ ] Levels 21 to 34: finish the game (optional but powerful) (L2)
+- [X] Levels 21 to 34: finish the game (L2)
 
 ### 1C. Networking basics (start after Bandit 10, run alongside Bandit 11 to 20)
 - [x] IP address, ports, DNS: what they are and how a name becomes an address (L2)
@@ -61,7 +61,7 @@ Rule: try each level for 10 to 15 minutes without the cheat sheet, then look thi
 ### 1D. Programming (only enough to read and write small tools)
 - [x] Python: add the `requests` library to what I already know. Send a GET and a POST, read headers and cookies (L2)
 - [x] Bash scripting: variables, `if`, `for` loops, running a command on every line of a file (L2)
-- [ ] Git: clone, add, commit, push, log, diff (L2)
+- [x] Git: clone, add, commit, push, log, diff (L2)
 - [ ] JavaScript: read a small script, understand the DOM, events and `fetch` (L2, needed for XSS in Phase 2)
 
 **Resource:** freeCodeCamp Python and JS (do not over-invest here)
