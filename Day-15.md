@@ -28,17 +28,7 @@ $ cat /tmp/HASH
 
 The script builds a file name from `I am user $myname`, where `$myname` is the user cron runs it as. The `echo` command only prints the file name, the password is inside that file.
 
-### Level 23: cron job with a different variable
-
-```bash
-$ cat /usr/bin/cronjob_bandit24.sh
-$ echo I am user bandit24 | md5sum | cut -d ' ' -f 1
-$ cat /tmp/HASH
-```
-
-Same idea as level 22, with the user name changed to bandit24.
-
-### Level 24: write your own script for cron to run
+### Level 23: write your own script for cron to run
 
 ```bash
 $ mkdir /tmp/lala
@@ -59,7 +49,7 @@ $ cat /tmp/lala/password.txt
 
 The cron script in `/var/spool/bandit24/foo` runs any executable file owned by bandit23 that it finds there, then deletes it. A first version using a relative path (`password.txt`) failed, because the cron wrapper changes into that folder before running the script, so the output landed there and was deleted with everything else. A full path fixed it.
 
-### Level 24 continued: brute-forcing a pin
+### Level 24: brute-forcing a pin
 
 The level gives a daemon on a port that needs the current password plus a 4-digit pin, with no way to find the pin except trying all 10000 combinations. The level says a new connection is not needed for each guess.
 
