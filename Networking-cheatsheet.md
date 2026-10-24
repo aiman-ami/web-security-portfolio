@@ -135,3 +135,19 @@ try:
 except requests.exceptions.ConnectionError:
     print("Got a DNS error, no such site, try again")
 ```
+## curl in scripts (status codes)
+
+| Command | What it does | Example |
+|---|---|---|
+| `curl -s` | Silent mode, hides the progress output | `curl -s https://github.com` |
+| `curl -o /dev/null` | Throws away the page body | `curl -o /dev/null https://github.com` |
+| `curl -w "%{http_code}"` | Prints the status code after the request | `curl -w "%{http_code}" https://github.com` |
+| All three together | Returns only the status code | `code=$(curl -s -o /dev/null -w "%{http_code}" "$1")` |
+| `curl -L` | Follows redirects to the final page | `curl -L -s -o /dev/null -w "%{http_code}" http://github.com` |
+
+### curl status code notes
+- `$(...)` stores the printed result in a variable, so the script can test it with `if`.
+- `000` means curl got no response at all, for example the domain does not exist.
+- Without `-L`, `http://github.com` returns 301. With `-L` it follows the redirect and ends at 200.
+- Test addresses: `https://httpbin.org/status/404` always returns 404.
+- Tested by me: `-s`, `-o /dev/null`, `-w "%{http_code}"`, the combined line, and the codes 200, 301, 404 and 000. `-L` is from general knowledge and not tested.
