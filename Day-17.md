@@ -8,7 +8,7 @@ What I did:
 - Used the DOM (select and change page elements), events (click), `fetch`, and read a small script
 - Hit a CORS error on a cross-origin `fetch`
 
-Roadmap: Git (git diff) done at L2. Bash scripting done at L3. JavaScript (read a small script, DOM, events, fetch) done at L2 (guided, not yet written alone). Phase 1 complete.
+Roadmap: Git (git diff) done at L2. Bash scripting (variables, read, if/elif, arguments, exit) done at L3; for and while loops and per-line processing still to do. JavaScript (read a small script, DOM, events, fetch) done at L2 (guided, not yet written alone). Phase 1 complete except the Bash loops item.
 
 ## What I learned
 
