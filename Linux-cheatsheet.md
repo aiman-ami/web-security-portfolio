@@ -1,4 +1,4 @@
-# Linux Basics Cheat Sheet (Aiman's Edition)
+# Linux Basics Cheat Sheet 
 Covers: Linux Journey command line section, Text Fu section (complete, lessons 1 to 16), Advanced Text-Fu (regex and editors), cmdchallenge battles, and all labs
 
 ## Navigation
@@ -841,6 +841,28 @@ Extra notes:
 - `nc -lvp 9999` works on some versions of `nc`, but others reject `-l` together with `-p`. `nc -lv 9999` is the safe form.
 - Use a port between 1025 and 65535 that is not already in use.
 - To test a listener you need a second terminal to connect to it.
+
+## Script arguments and exit codes
+
+| Command | What it does | Example |
+|---|---|---|
+| `$1` | Holds the first argument given to the script | `./arg.sh hello` makes `$1` equal to hello |
+| `$2` | Holds the second argument | `./arg.sh hello world` makes `$2` equal to world |
+| `[ -z "$1" ]` | True when the argument is empty | `if [ -z "$1" ]; then echo "Usage"; fi` |
+| `exit 1` | Stops the whole script with a failure code | `echo "Usage: ./arg.sh WORD"; exit 1` |
+| `exit 0` | Stops the script with a success code | `exit 0` |
+| `$?` | Holds the exit code of the last command | `ls; echo $?` |
+| `-eq -ne -gt -lt` | Compare numbers | `[ "$code" -eq 200 ]` |
+| `= !=` | Compare text | `[ "$name" = "admin" ]` |
+| `\|\|` | Run the next test if the first one fails (OR) | `[ "$c" -eq 301 ] \|\| [ "$c" -eq 302 ]` |
+
+### Script arguments notes
+- `exit 1` stops the whole script, not just the `if` block. Without it the script carries on to the next lines.
+- `$1` is only the first word. Extra words go into `$2`, `$3` and so on.
+- Always quote variables, as in `"$1"`, so an empty value does not break the test.
+- Spaces are required inside the brackets: `[ "$1" ]` works and `["$1"]` does not.
+- Use `-eq` for numbers and `=` for text. Using `-eq` on text gives an error.
+- Tested by me: `$1`, `-z`, `exit 1`, `-eq`, `||`. The rest of this section (`exit 0`, `$?`, `-ne -gt -lt`, `= !=`) is from general knowledge and not tested.
 
 ## Situations: What do I use?
 | Situation | Command |
