@@ -1,12 +1,14 @@
-# Day 17: git diff, Bash Arguments and Status Scripts, JavaScript Basics
+# Day 17: git diff, Bash Arguments and Status Scripts, JavaScript Basics, DOM, Events and fetch
 
 What I did:
 - Cloned my portfolio repo into WSL and practised `git status`, `git diff` and `git restore`
 - Learned Bash arguments (`$1`), the empty check (`-z`) and `exit 1`
 - Wrote `status.sh` solo, then `check2.sh` solo (kept as local practice, not in the repo)
-- Learned JavaScript basics in the browser DevTools console: print, variables, joining text, if/else, lists, loops, and the `document` object
+- Learned JavaScript in the browser DevTools console: print, variables, joining text, if/else, lists, loops
+- Used the DOM (select and change page elements), events (click), `fetch`, and read a small script
+- Hit a CORS error on a cross-origin `fetch`
 
-Roadmap: Git (git diff) done at L2. Bash scripting done at L3. JavaScript basics done at L2 (guided, not yet solo).
+Roadmap: Git (git diff) done at L2. Bash scripting done at L3. JavaScript (read a small script, DOM, events, fetch) done at L2 (guided, not yet written alone). Phase 1 complete.
 
 ## What I learned
 
@@ -153,16 +155,13 @@ github.com
 > for (let s of sites) { console.log(s) }
 github.com
 linkedin.com
-> console.log(document.title)
-> document.title = "I changed this"
 ```
 
 - `let` makes a variable. No `$` is used to read it.
 - `+` joins text exactly as written, so the space has to be inside the quotes
 - `===` means equal to. It is the JavaScript version of `-eq` in Bash and `==` in Python.
 - Lists start at index 0, the same as Python
-- `for (let s of sites)` reads as "for each s in sites"
-- `document` is the page I am on. Changing `document.title` changed the tab title, but only in my browser. Reloading the page restores it.
+- `for (let s of sites)` reads as "for each s in sites". Here `s` is the site name itself, not the index.
 
 Same check in three languages:
 
@@ -175,7 +174,87 @@ Same check in three languages:
 Extra notes (general knowledge, not tested):
 - JavaScript and Java are different languages
 - Semicolons at the end of lines are optional in JavaScript because the language adds them automatically
+
+### JavaScript: the DOM (changing the page)
+
+`document` is the page I am on. I tested these on `https://example.com`.
+
+```javascript
+> console.log(document.title)
+> document.title = "I changed this"
+> document.body.style.background = "pink"
+> document.querySelector("h1")
+null
+> document.body.innerHTML
+(the page's HTML: p tags and one a tag, no h1)
+> document.querySelector("p").textContent = "Changed by Aiman"
+```
+
+- `document.title` is the tab title. Changing it changed the tab, only in my browser.
+- `document.body.style.background = "pink"` changed the page colour. Any colour name works.
+- `querySelector("tag")` picks the first matching element on the page
+- `querySelector("h1")` returned `null` because this version of example.com has no h1. Setting text on `null` gives "Cannot set properties of null".
+- `document.body.innerHTML` shows what the page is really made of, so I check it before assuming which tags exist
+- `.textContent` is the text inside an element
+- Reloading the page restores the original. Changes in the console never touch the real site.
+
+Extra notes (general knowledge, not tested):
 - JavaScript that can change the page is the basis of attacks like XSS, which comes in Phase 2
+
+### JavaScript: events
+
+An event is something the user does, such as a click, that JavaScript can react to.
+
+```javascript
+> document.querySelector("p").addEventListener("click", () => { console.log("you clicked the paragraph") })
+```
+
+Clicking the paragraph printed `you clicked the paragraph` once per click.
+
+- `addEventListener("click", ...)` runs the code after `=>` every time the element is clicked
+- `() => { ... }` is a small function. It is the code that runs on each click.
+
+### JavaScript: fetch
+
+`fetch` makes HTTP requests from JavaScript. It does the same job as `curl` in Bash and `requests` in Python.
+
+```javascript
+> fetch("/").then(r => console.log(r.status))
+200
+```
+
+- `fetch("/")` makes a GET request to the same site
+- `.then(r => ...)` waits for the reply and then runs the code. `r` is the reply.
+- `r.status` is the status code, the same number `check2.sh` printed
+
+### Reading a small script and the CORS error
+
+Script I read first and explained in my own words:
+
+```javascript
+let sites = ["github.com", "example.com"]
+for (let s of sites) {
+  fetch("https://" + s).then(r => console.log(s + " returned " + r.status))
+}
+```
+
+I explained the loop, the `"https://" + s` join, `r.status` and the spaces around `returned` correctly. Correction: `s` is the site name, not the index.
+
+Result, run on the example.com tab:
+
+```
+example.com returned 200
+Access to fetch at 'https://github.com/' from origin 'https://example.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+Uncaught (in promise) TypeError: Failed to fetch
+```
+
+- `example.com` is the page I was on, so it is the same origin and the request worked
+- `github.com` is a different origin. The browser blocked my script from reading the reply because GitHub sent no permission header. This is CORS. It does not mean GitHub was down.
+- Only browsers enforce this. `curl` and Python `requests` have no such limit.
+
+Extra notes (general knowledge, not tested):
+- The rule behind CORS is the same-origin policy. It stops a page on one site from reading pages of another site, for example another site reading my GitHub or bank pages.
+- Many web attacks target this rule or sites that configure it badly. It comes up again in Phase 2.
 
 ## Key takeaways
 - `git diff` shows unstaged changes line by line, and `git restore FILE` undoes them
@@ -183,4 +262,5 @@ Extra notes (general knowledge, not tested):
 - `curl -s -o /dev/null -w "%{http_code}"` returns only the status code, which is useful in scripts
 - Use `-eq` for numbers and `=` for text in Bash tests, and quote variables
 - JavaScript uses `let`, `===` and `{ }`, but the ideas match Bash and Python
-- `document` lets JavaScript read and change the page, which is why it matters for web security
+- `document.querySelector` selects page elements, and `innerHTML` shows what a page really contains
+- `fetch` sends requests from the browser, but a cross-origin reply is blocked by CORS unless the other site allows it
