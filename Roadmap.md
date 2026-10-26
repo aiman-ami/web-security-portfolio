@@ -94,7 +94,7 @@ Order of work: account and Burp setup first, then Injection labs. Do 2A alongsid
 
 ### 2B. Burp Suite (do this first in Phase 2)
 
-- [ ] Install and proxy setup (Firefox and FoxyProxy) (L3)
+- [x] Install and proxy setup (Firefox and FoxyProxy) (L3)
 - [ ] Intercepting requests (L3)
 - [ ] Repeater: modify and resend (L3)
 - [ ] Scope and target mapping (L3)
