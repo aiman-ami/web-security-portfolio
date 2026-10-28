@@ -6,6 +6,7 @@
 - Lab: SQL injection UNION attack, finding a column containing text, solved
 - Lab: SQL injection UNION attack, retrieving data from other tables, solved
 - Lab: SQL injection UNION attack, retrieving multiple values in a single column, solved
+- Closed the last open Phase 1 item: Bash for and while loops, including reading a file line by line and running curl checks on every line (L2)
 
 Roadmap: 2C SQL injection, UNION attacks group complete.
 
