@@ -864,6 +864,28 @@ Extra notes:
 - Use `-eq` for numbers and `=` for text. Using `-eq` on text gives an error.
 - Tested by me: `$1`, `-z`, `exit 1`, `-eq`, `||`. The rest of this section (`exit 0`, `$?`, `-ne -gt -lt`, `= !=`) is from general knowledge and not tested.
 
+## Loops
+
+| Command | What it does | Example |
+|---|---|---|
+| `while read -r var; do ... done < file` | Reads a file one line at a time into `var` | `while read -r site; do echo "$site"; done < sites.txt` |
+| `for var in item1 item2 item3; do ... done` | Loops over a fixed list written directly in the command | `for site in github.com example.com; do echo "$site"; done` |
+| `for var in $(cat file); do ... done` | Loops over a file's contents, splitting on spaces too | `for site in $(cat sites.txt); do echo "$site"; done` |
+
+### Loop notes
+- `-r` in `read -r` stops backslashes in the file from being treated specially. Always include it.
+- `while read` is the safer choice for real files, because it reads whole lines, including ones with spaces.
+- `for ... in $(cat file)` is quicker to type, but it splits on every space, so a line with spaces in it breaks into separate words.
+- `for var in item1 item2 item3` works without a file at all, items are written directly in the command, separated by spaces.
+- Combine either loop with `curl` to check a list of sites one at a time:
+
+```bash
+while read -r site; do
+    code=$(curl -s -o /dev/null -w "%{http_code}" "https://$site")
+    echo "$site returned $code"
+done < sites.txt
+```
+
 ## Situations: What do I use?
 | Situation | Command |
 |---|---|
