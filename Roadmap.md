@@ -69,7 +69,7 @@ Rule: try each level for 10 to 15 minutes without the cheat sheet, then look thi
 
 - [x] Python: add the `requests` library to what I already know. Send a GET and a POST, read headers and cookies (L2)
 - [x] Bash scripting: variables, `read`, `if/elif`, arguments (`$1`), `exit` (L3)
-- [ ] Bash scripting: `for` and `while` loops, running a command on every line of a file (L2)
+- [x] Bash scripting: `for` and `while` loops, running a command on every line of a file (L2)
 - [x] Git: clone, add, commit, push, log, diff (L2)
 - [x] JavaScript: read a small script, understand the DOM, events and `fetch` (L2, needed for XSS in Phase 2)
 
