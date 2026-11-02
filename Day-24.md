@@ -10,3 +10,17 @@
 Roadmap: 2B UNION attacks with filter bypass done.
 
 ## Writeup
+
+```
+Bug: storeId value inside the XML body is injectable, and a WAF blocks raw SQL
+keywords like union and select before the request reaches the application
+Technique: WAF bypass through XML character references. The WAF inspects the raw
+request text and sees only harmless encoded entities like u, while the server's
+XML parser decodes them back into real characters before the value reaches the SQL
+query, so the fully decoded payload lands inside the query
+Payload pattern: <storeId>
+Why it worked: one plain UNION test showed "Attack detected", confirming the WAF.
+The encoded version returned data, confirming the bypass. A two column UNION
+returned nothing, so the query has one column. Concatenation with || '~' || carried
+both values in that single column, and the response printed them as "username~password"
+```
