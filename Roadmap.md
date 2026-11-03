@@ -97,7 +97,7 @@ Order of work: account and Burp setup first, then Injection labs. Do 2A alongsid
 - [x] Install and proxy setup (Firefox and FoxyProxy) (L3)
 - [x] Intercepting requests (L3)
 - [x] Repeater: modify and resend (L3)
-- [ ] Scope and target mapping (L3)
+- [x] Scope and target mapping (L3)
 - [x] Intruder: fuzzing basics (L2)
 - [ ] Decoder and Comparer (L2)
 
