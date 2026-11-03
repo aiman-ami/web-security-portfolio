@@ -8,7 +8,7 @@
 - Lab: DOM XSS in jQuery selector sink using a hashchange event, solved
 - Closed Burp's Scope and target mapping item: added the lab domain to scope, removed an accidental extra, filtered the site map to in-scope only (L2)
 
-Roadmap: 2C XSS basics, Apprentice labs mostly done.
+Roadmap: 2C XSS basics, Apprentice labs mostly done (3 remaining). 2B Scope and target mapping done at L2.
 
 ## What I learned
 
