@@ -1,7 +1,6 @@
 # Bug Bounty Master Checklist
 
-> Day 1: Sept 29, 2026. Started with NahamSec's no-BS roadmap. First mission: Linux.
-
+> Day 1: Sept 29, 2026. Started with NahamSec's no-BS roadmap.
 ## How to read this file
 
 Every topic has a target level. The level says how deep to go, so nothing is vague.
