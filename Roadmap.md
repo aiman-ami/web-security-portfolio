@@ -106,7 +106,9 @@ Order of work: account and Burp setup first, then Injection labs. Do 2A alongsid
 For each one: **read, lab, writeup**. Check the exact names on owasp.org before starting.
 Work in this order. SQL is already a strength, so Injection should go quickly.
 
-- [ ] A05 Injection: SQL injection (L3)
+- [x] A05 Injection: SQL injection (L3)
+  - [ ] Blind SQL injection with out-of-band interaction (blocked, requires Burp Suite Professional)
+  - [ ] Blind SQL injection with out-of-band data exfiltration (blocked, requires Burp Suite Professional)
 - [ ] A05 Injection: XSS basics (L3)
 - [ ] A05 Injection: command injection (L3)
 - [ ] A01 Broken Access Control: IDOR, privilege escalation (L3)
