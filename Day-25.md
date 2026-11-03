@@ -6,6 +6,7 @@
 - Lab: DOM XSS in innerHTML sink using source location.search, solved
 - Lab: DOM XSS in jQuery anchor href attribute sink using location.search source, solved
 - Lab: DOM XSS in jQuery selector sink using a hashchange event, solved
+- Closed Burp's Scope and target mapping item: added the lab domain to scope, removed an accidental extra, filtered the site map to in-scope only (L2)
 
 Roadmap: 2C XSS basics, Apprentice labs mostly done.
 
