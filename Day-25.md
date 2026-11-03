@@ -6,9 +6,12 @@
 - Lab: DOM XSS in innerHTML sink using source location.search, solved
 - Lab: DOM XSS in jQuery anchor href attribute sink using location.search source, solved
 - Lab: DOM XSS in jQuery selector sink using a hashchange event, solved
+- Lab: Reflected XSS into attribute with angle brackets HTML-encoded, solved
+- Lab: Stored XSS into anchor href attribute with double quotes HTML-encoded, solved
+- Lab: Reflected XSS into a JavaScript string with angle brackets HTML encoded, solved
 - Closed Burp's Scope and target mapping item: added the lab domain to scope, removed an accidental extra, filtered the site map to in-scope only (L2)
 
-Roadmap: 2C XSS basics, Apprentice labs mostly done (3 remaining). 2B Scope and target mapping done at L2.
+Roadmap: 2C XSS basics, all 9 Apprentice labs done. 2B Scope and target mapping done at L2.
 
 ## What I learned
 
@@ -115,6 +118,42 @@ Extra notes, explained simply:
   empty hash, then immediately change the hash to the real payload, since the bug
   only fires on a change, not on the initial load
 
+### Reflected XSS into attribute with angle brackets HTML-encoded
+
+```
+"onmouseover="alert(1)
+```
+
+Why it worked: angle brackets `<` `>` were HTML-encoded, so a script or svg tag
+wouldn't survive, but quotes were not encoded. This payload closes the current
+attribute early with `"`, then opens a brand new attribute, `onmouseover`, with its
+own event handler. No angle brackets needed anywhere, so the filter never triggers.
+
+### Stored XSS into anchor href attribute with double quotes HTML-encoded
+
+```
+javascript:alert(1)
+```
+
+Submitted as the comment author's "website" value. Why it worked: the website field
+becomes the href of the author name link. Double quotes were encoded, so breaking
+out of the attribute wasn't an option, but replacing the whole field with a
+javascript: URL didn't need to break out of anything, it just became the entire
+href value, and runs when the author name link is clicked.
+
+### Reflected XSS into a JavaScript string with angle brackets HTML encoded
+
+```
+'-alert(1)-'
+```
+
+Why it worked: the search term is reflected inside an existing JavaScript string,
+something like `var x = 'INPUT';`. Angle brackets were encoded so a tag-based
+payload wouldn't work, but the single quote wasn't encoded. The leading `'` closes
+the string early, `alert(1)` runs as its own statement, and the trailing `-'` keeps
+the rest of the original line from breaking, using subtraction as a harmless way to
+glue the leftover syntax together.
+
 ## Key takeaways
 - Reflected XSS needs the victim to send the malicious request themselves (click a
   link); stored XSS runs for anyone who later views the saved content
@@ -124,7 +163,10 @@ Extra notes, explained simply:
   JavaScript on many HTML elements, not just inside a script tag, useful when
   "script" itself is filtered
 - A javascript: URL runs code when clicked or navigated to, instead of going to a
-  real address
+  real address, and can replace an entire attribute value rather than needing to
+  break out of it
 - Some DOM-based bugs only trigger on a change (like the URL hash changing) after
   the page has already loaded, not on the first load, which is why the exploit
   server and iframe trick was needed here
+- When angle brackets are encoded but quotes are not, breaking out of an attribute
+  or a JavaScript string with just a quote is often enough, no tags required at all
