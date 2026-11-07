@@ -171,6 +171,42 @@ that shortcut is pressed, not just from a real mouse click.
   press) counts as handled automatically, direct URL can still work even
   though a "second step" is technically involved
 
+## URL encoding (different from HTML entities)
+
+Used when a payload travels inside a URL itself, such as a query parameter
+or inside an iframe's src attribute on the exploit server. A browser cannot
+safely carry certain raw characters inside a URL, so they get represented as
+% followed by two hex digits. This is a different system from HTML entities,
+URL encoding is decoded by the browser when it reads the URL, HTML entities
+are decoded when the browser renders HTML. Don't mix them up: a payload sent
+as a URL parameter needs URL encoding, a payload reflected into an HTML
+attribute needs an HTML entity, if either is needed at all.
+
+| Character | URL encoded |
+|---|---|
+| space | `%20` or `+` |
+| `"` | `%22` |
+| `'` | `%27` |
+| `<` | `%3C` |
+| `>` | `%3E` |
+| `=` | `%3D` |
+| `#` | `%23` |
+| `&` | `%26` |
+| `/` | `%2F` |
+| `:` | `%3A` |
+
+Example, decoding a full payload seen in a lab:
+
+```
+%22%3E%3Cbody%20onresize=print()%3E
+```
+
+decodes to:
+
+```
+"><body onresize=print()>
+```
+
 ## HTML entities (bypassing filters that check for raw characters)
 
 A filter that escapes or blocks a raw character often does not recognize
@@ -185,6 +221,11 @@ filter has already run.
 | `&lt;` | `<` |
 | `&gt;` | `>` |
 | `&amp;` | `&` |
+
+URL encoding (above) is for characters traveling inside a URL. HTML entities
+(this section) are for characters that need to survive a page-content filter
+and get decoded when the browser renders the HTML. Check which one a payload
+actually needs based on where it's landing, a URL parameter or HTML content.
 
 ### House: single quotes are escaped, HTML entities are not filtered
 
