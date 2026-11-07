@@ -119,3 +119,54 @@ Trick: speak the framework's own expression syntax instead of HTML
 - Houses above are only the ones tested so far, in these PortSwigger labs. New
   houses get added here as they come up
 - Tested by me: all houses above, each one in its matching lab
+
+## Finding what a filter blocks (Burp Intruder method)
+
+1. Confirm an obvious payload gets blocked (usually a 400 response)
+2. Send the request to Intruder, replace input with `<>`, mark a payload
+   position between the brackets
+3. Paste PortSwigger's tag list (from their own XSS cheat sheet) as payloads,
+   run the attack, look for 200s among the 400s
+4. Repeat with the event list once a working tag is found
+
+### House: a filter blocks common tags (img, svg alone, body)
+
+Trick: try an unrecognized, made-up tag name, the browser still renders it
+as an element with working attributes, even though it means nothing to HTML
+itself. Needs a focus trigger since there's no load/error event to use.
+
+```
+<xss id=x onfocus=alert(1) tabindex=1>#x
+```
+
+The #x at the end matches id=x, which auto-focuses the element on page load.
+
+### House: a filter blocks common tags but SVG animation tags survive
+
+```
+<svg><animatetransform onbegin=alert(1)>
+```
+
+animatetransform (and others like animate, set) only work inside an <svg>
+wrapper, and carry their own events (onbegin, onend, onrepeat) tied to the
+animation's lifecycle, fires automatically when the animation starts.
+
+### House: reflected inside a link tag's href, single quotes
+
+```
+'accesskey='x'onclick='alert(1)
+```
+
+accesskey assigns a keyboard shortcut to any element. onclick fires when
+that shortcut is pressed, not just from a real mouse click.
+
+## Deciding: direct URL, or exploit server?
+
+- Fires immediately when the page with the input loads, no second step
+  needed → visit the crafted URL directly
+- Needs something to happen after the page has already loaded (a hash
+  changing, a resize, a stored comment viewed by someone else) → needs the
+  exploit server, to build a page that causes that second step
+- Edge case: a lab's simulated victim performing an action (like a key
+  press) counts as handled automatically, direct URL can still work even
+  though a "second step" is technically involved
