@@ -170,3 +170,41 @@ that shortcut is pressed, not just from a real mouse click.
 - Edge case: a lab's simulated victim performing an action (like a key
   press) counts as handled automatically, direct URL can still work even
   though a "second step" is technically involved
+
+## HTML entities (bypassing filters that check for raw characters)
+
+A filter that escapes or blocks a raw character often does not recognize
+that character written as an HTML entity instead. The browser decodes the
+entity into the real character only when rendering the page, after the
+filter has already run.
+
+| Entity | Real character |
+|---|---|
+| `&apos;` | `'` |
+| `&quot;` | `"` |
+| `&lt;` | `<` |
+| `&gt;` | `>` |
+| `&amp;` | `&` |
+
+### House: single quotes are escaped, HTML entities are not filtered
+
+```
+http://foo?&apos;-alert(1)-&apos;
+```
+
+### House: both quote and backslash are escaped
+
+Trick: break out of the whole script block instead of just the string
+
+```
+</script><script>alert(1)</script>
+```
+
+### House: inside a template literal (backtick string)
+
+Trick: stay inside it, use its own expression syntax, no escaping needed if
+${ } itself isn't blocked
+
+```
+${alert(1)}
+```
