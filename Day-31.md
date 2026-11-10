@@ -69,7 +69,7 @@ How it works, step by step:
 - `<svg><a>...</a></svg>`: svg is a container, and an a element inside it is a real clickable link, drawn with SVG instead of regular HTML
 - `<animate attributeName=href values=javascript:alert(1) />`: animate normally changes an element's property over time. attributeName=href names the property being animated, and values=javascript:alert(1) is the value it is set to. The dangerous value is never written as the link's own href in the source, so the filter does not see it. It is applied live, as an animation effect
 - `<text x=20 y=20>Click me</text>` draws the clickable words at position 20,20. The lab requires the word Click, because the simulated victim only clicks something labelled that way
-- Once animate has set the href, clicking the link behaves like the javascript: URL in the DOM XSS in jQuery anchor href attribute sink lab from Day 25: a javascript: href runs its code on click, so no event handler is needed
+- Once animate has set the href, clicking the link behaves like the javascript: URL in the Day 25 lab "DOM XSS in jQuery anchor href attribute sink using location.search source": a javascript: href runs its code on click, so no event handler is needed
 - One sentence: instead of writing the dangerous destination directly, which gets blocked, use SVG's animation feature to set it after the filter has checked the page
 
 My notes:
