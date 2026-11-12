@@ -109,7 +109,7 @@ Work in this order. SQL is already a strength, so Injection should go quickly.
   - [ ] Blind SQL injection with out-of-band interaction (blocked, requires Burp Suite Professional)
   - [ ] Blind SQL injection with out-of-band data exfiltration (blocked, requires Burp Suite Professional)
 - [x] A05 Injection: XSS basics (L3)
-  - [ ] Lab: Exploiting cross-site scripting to capture passwords (blocked requires Burp Collaborator)
+  - [ ] Lab: Exploiting cross-site scripting to capture passwords (blocked, requires Burp Collaborator)
 - [ ] A05 Injection: command injection (L3)
 - [ ] A01 Broken Access Control: IDOR, privilege escalation (L3)
 - [ ] A07 Authentication Failures (L3)
