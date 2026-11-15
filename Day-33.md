@@ -71,4 +71,4 @@ Both remaining labs in this section need Burp Collaborator to detect an out-of-b
 - Shell chaining operators are the core trick of this entire section: & and ; both run a second, independent command after the first, && only runs the second if the first succeeds, and || only runs it if the first fails
 - A blind vulnerability with no visible output and no writable, readable location still has two ways to prove it exists: a time delay like sleep 10, or an out-of-band channel like a DNS lookup to Collaborator
 - Output redirection with > turns a blind injection into a readable one, as long as there is a folder the application both lets you write to and lets you read back from over HTTP
-- # as a shell comment character serves the same purpose here that it does in SQL injection, swallowing whatever trailing syntax the application would otherwise append, so the injected command stays valid
+- As a shell comment character serves the same purpose here that it does in SQL injection, swallowing whatever trailing syntax the application would otherwise append, so the injected command stays valid
