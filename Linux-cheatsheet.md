@@ -986,3 +986,42 @@ done < sites.txt
 19. A grep pattern starting with - needs -e. A pattern with special characters needs -F
 20. grep exit status: 0 match, 1 no match, 2 error. Do not trust an empty screen, check $?
 21. wc -l counts newline characters. wc -c counts bytes, wc -m counts characters
+
+## Shell command chaining (used in OS command injection)
+
+When a command's output is appended to another command, these operators
+control whether and how the second one runs, in the same shell line.
+
+| Operator | Behaviour |
+|---|---|
+| `;` | Runs the second command regardless of whether the first succeeded |
+| `&` | Runs the second command right after the first, on the same line |
+| `&&` | Runs the second command only if the first one succeeded |
+| `\|\|` | Runs the second command only if the first one failed |
+| `\|` | Feeds the first command's output in as input to the second command |
+
+`#` comments out anything that follows on the same line, useful for
+swallowing trailing syntax that would otherwise break the command.
+
+`>` redirects a command's output into a file instead of printing it,
+overwriting the file if it already exists. Useful when a command's output
+is not shown anywhere directly, but the result can be written somewhere
+readable instead.
+
+`$(...)` runs the command inside the parentheses first, then substitutes
+its output directly into the surrounding command, as if it had been typed
+there. For example, `echo $(whoami)` first runs whoami, then runs echo on
+whatever it printed.
+
+### Picking a detection method when output isn't shown directly
+
+- Output appears in the response → read it directly
+- No output, but a delay would be noticeable → chain in `sleep 10` and
+  measure the response time
+- No output, but a folder exists that is both writable and already served
+  back over HTTP → redirect output into a file there with `>`, then
+  request that file through the existing file-serving endpoint
+- No output, command runs with no effect on the response, and no
+  writable+readable folder exists → needs an out-of-band channel, such as
+  a DNS lookup carrying `$(whoami)` in the domain name, read back from
+  that channel's own log
