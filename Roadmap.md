@@ -113,7 +113,7 @@ Work in this order. SQL is already a strength, so Injection should go quickly.
 - [x] A05 Injection: command injection (L3)
   - [ ] Lab: Blind OS command injection with out-of-band interaction (blocked, requires Burp Collaborator)
   - [ ] Lab: Blind OS command injection with out-of-band data exfiltration (blocked, requires Burp Collaborator)
-- [ ] A01 Broken Access Control: IDOR, privilege escalation (L3)
+- [x] A01 Broken Access Control: IDOR, privilege escalation (L3)
 - [ ] A07 Authentication Failures (L3)
 - [ ] A02 Security Misconfiguration (L2)
 - [ ] A04 Cryptographic Failures (L2)
