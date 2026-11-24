@@ -1,8 +1,10 @@
-# Day 38: Username Enumeration via Response Timing
+# Day 38: Timing-Based and Logic-Flawed Brute-Force Protection
 
 - Lab: Username enumeration via response timing, solved (Practitioner)
+- Lab: Broken brute-force protection, IP block, solved (Practitioner)
+- Lab: Username enumeration via account lock, in progress (Practitioner)
 
-Roadmap: A07 Authentication Failures, 5 of 14 Authentication labs solved.
+Roadmap: A07 Authentication Failures, 6 of 14 Authentication labs solved.
 
 ## What I learned
 
@@ -18,8 +20,18 @@ Unlike the two earlier username enumeration labs, the response text here gives n
 - The Response received and Response completed columns in Burp's results table show the actual time each response took, letting the slowest response be identified and compared the same way earlier labs sorted by an extracted error message instead of timing
 - One sentence: when a response's content reveals nothing, how long it takes to arrive can still give away whether a username is real, since checking a password is inherently slower than rejecting an unknown one outright, and spoofing a trusted IP header defeats the brute-force protection that would otherwise stop enough attempts to measure it
 
-## Key takeaways
+### Broken brute-force protection, IP block
 
-- Timing-based username enumeration works on the same principle as the content-based versions from Day 37, something about the response differs based on username validity, timing is just a subtler channel than wording or length
-- A header like X-Forwarded-For, meant for legitimate proxy use, becomes a bypass for IP-based rate limiting whenever the application trusts its value without any verification that it reflects the real connecting client
-- Burp Intruder's Pitchfork attack type exists specifically for cases where multiple payload positions must change together in lockstep on every request, rather than being tested in every possible combination against each other
+The lab blocks an IP after 3 failed logins in a row, but logging in successfully resets that failure counter back to zero. Password: freedom.
+
+- A Pitchfork attack was built where position 1 (username) and position 2 (password) alternate together on every request: wiener paired with the correct password peter, then carlos paired with the next candidate password, repeating down both lists in lockstep
+- Every other request, the wiener:peter login, is a guaranteed success, which resets the failure counter to zero immediately after it. The very next request, a guess at carlos's password, only ever counts as a single failure before being reset again by the following success, so the 3-in-a-row block threshold is never reached, no matter how many total guesses are made
+- Resource pool concurrency had to be set to 1 (Maximum concurrent requests), otherwise Burp could fire several requests in parallel and the carefully ordered alternation of success/guess could arrive at the server out of sequence, breaking the reset timing the whole attack depends on
+- After the attack, filtering out 200 responses and sorting by username left exactly one 302 response under carlos, with his real password in the adjacent payload column
+- One sentence: if a successful login resets the failed-attempt counter, interleaving one guaranteed-success login between every single guess keeps the counter from ever reaching the block threshold, as long as requests are forced to fire in that exact order
+
+## In progress
+
+### Username enumeration via account lock
+
+A Cluster bomb attack was run with username as position 1 and a blank Null payload position (5 repeats) as position 2, intended to send each candidate username 5 times in a row to trigger that username's account lock, which should then reveal itself through a longer, different error message. All 505 responses came back with an identical length of 3344 bytes, meaning the lock never actually triggered for any username. Suspected cause: Resource pool concurrency was not set to 1, the same setting needed in the IP block lab above, so requests to different usernames likely interleaved instead of each username's 5 attempts running back to back, preventing any single username's count from reaching the lock threshold uninterrupted. Plan for tomorrow: rerun with Resource pool Maximum concurrent requests set to 1 and check whether the response lengths finally diverge.
